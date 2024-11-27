@@ -76,5 +76,11 @@ WORKDIR /
 ADD src/start.sh src/rp_handler.py test_input.json ./
 RUN chmod +x /start.sh
 
+#  model 
+RUN wget -O models/checkpoints/flux/flux1-dev-fp8.safetensors https://huggingface.co/Comfy-Org/flux1-dev/blob/main/flux1-dev-fp8.safetensors
+RUN wget -O models/loras/flux/Hyper-FLUX.1-dev-8steps-lora_rank1.safetensors https://huggingface.co/bdsqlsz/Hyper-Flux1-dev/blob/main/Hyper-FLUX.1-dev-8steps-lora_rank1.safetensors
+RUN wget -O models/loras/flux/pixel-art-flux-v3-learning-rate-4.safetensors https://civitai.com/api/download/models/833669?type=Model&format=SafeTensor
+RUN wget -O models/controlnet/flux/diffusion_pytorch_model.safetensors https://huggingface.co/Shakker-Labs/FLUX.1-dev-ControlNet-Union-Pro/blob/main/diffusion_pytorch_model.safetensors
+
 # Start the container
 CMD /start.sh
