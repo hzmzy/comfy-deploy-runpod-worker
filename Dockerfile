@@ -58,7 +58,6 @@ WORKDIR /comfyui/custom_nodes
 
 RUN git clone --depth 1 https://github.com/ltdrdata/ComfyUI-Manager.git
 RUN cd ComfyUI-Manager && pip3 install -r requirements.txt
-ADD *_snapshot.json ./startup-scripts/
 
 
 WORKDIR /comfyui

@@ -1,7 +1,5 @@
 {
   "input": {
-    "status_endpoint": "http://host.docker.internal:3001/api/update-run",
-    "file_upload_endpoint": "http://host.docker.internal:3001/api/file-upload",
     "workflow_api": {
       "2": {
         "inputs": {
