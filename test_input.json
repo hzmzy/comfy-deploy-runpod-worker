@@ -15,7 +15,7 @@
       },
       "4": {
         "inputs": {
-          "input_id": "https://cdn.discordapp.com/attachments/1119102674437156984/1188147865533554738/CleanShot_2023-12-23_at_23.55.202x.png?ex=659977ed&is=658702ed&hm=bd1dbe1065699a413ec82ca494a576d3ff9583cd001113ecd7ec33fa0a7c7dd6&"
+          "input_id": "https://images.pexels.com/photos/4870048/pexels-photo-4870048.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load"
         },
         "class_type": "ComfyUIDeployExternalImage"
       }

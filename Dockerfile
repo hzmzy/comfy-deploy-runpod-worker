@@ -78,12 +78,12 @@ RUN cd comfyui-deploy && pip3 install -r requirements.txt
 WORKDIR /comfyui/custom_nodes
 
 RUN git clone https://github.com/yolain/ComfyUI-Easy-Use.git 
-RUN cd ComfyUI-Easy-Use && pip3 install -r requirements.txt
+#RUN cd ComfyUI-Easy-Use && pip3 install -r requirements.txt
 
 WORKDIR /comfyui/custom_nodes
 
 RUN git clone https://github.com/chflame163/ComfyUI_LayerStyle.git 
-RUN cd ComfyUI_LayerStyle && pip3 install -r requirements.txt
+#RUN cd ComfyUI_LayerStyle && pip3 install -r requirements.txt
 
 WORKDIR /comfyui/custom_nodes
 
