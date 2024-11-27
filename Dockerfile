@@ -24,7 +24,7 @@ RUN apt-get autoremove -y && apt-get clean -y && rm -rf /var/lib/apt/lists/*
 # Clone ComfyUI repository
 RUN git clone https://github.com/comfyanonymous/ComfyUI.git /comfyui
 # Force comfyui on a specific version
-RUN cd /comfyui && git reset --hard b12b48e170ccff156dc6ec11242bb6af7d8437fd
+# RUN cd /comfyui && git reset --hard b12b48e170ccff156dc6ec11242bb6af7d8437fd
 
 # Change working directory to ComfyUI
 WORKDIR /comfyui
@@ -74,6 +74,30 @@ WORKDIR /comfyui/custom_nodes
 
 RUN git clone https://github.com/BennyKok/comfyui-deploy.git && cd comfyui-deploy && git reset --hard 6e068590a0831d10009074e65d23a083b31dd2d7
 RUN cd comfyui-deploy && pip3 install -r requirements.txt
+
+WORKDIR /comfyui/custom_nodes
+
+RUN git clone https://github.com/yolain/ComfyUI-Easy-Use.git 
+RUN cd ComfyUI-Easy-Use && pip3 install -r requirements.txt
+
+WORKDIR /comfyui/custom_nodes
+
+RUN git clone https://github.com/chflame163/ComfyUI_LayerStyle.git 
+RUN cd ComfyUI_LayerStyle && pip3 install -r requirements.txt
+
+WORKDIR /comfyui/custom_nodes
+
+RUN git clone https://github.com/kijai/ComfyUI-KJNodes.git 
+
+
+RUN git clone https://github.com/EllangoK/ComfyUI-post-processing-nodes.git 
+
+
+RUN git clone https://github.com/Suzie1/ComfyUI_Comfyroll_CustomNodes.git 
+
+
+
+
 
 WORKDIR /
 
