@@ -78,7 +78,7 @@ RUN cd comfyui-deploy && pip3 install -r requirements.txt
 WORKDIR /
 
 # Add the start and the handler
-ADD src/start.sh src/rp_handler.py test_input.json ./
+ADD src/start.sh src/rp_handler.py test_input.json *_snapshot.json ./
 RUN chmod +x /start.sh
 
 
