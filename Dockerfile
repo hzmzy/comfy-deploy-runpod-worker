@@ -47,10 +47,10 @@ RUN pip3 install runpod requests
 # ADD models/checkpoints/sd_xl_base_1.0.safetensors models/checkpoints/
 # ADD models/vae/sdxl_vae.safetensors models/vae/
 
+ADD  models/loras/Hyper-FLUX.1-dev-8steps-lora_rank1.safetensors models/loras/
+ADD  models/loras/pixel-art-flux-v3-learning-rate-4.safetensors models/loras/
+
 RUN wget -O models/checkpoints/flux1-dev-fp8.safetensors https://huggingface.co/Comfy-Org/flux1-dev/resolve/main/flux1-dev-fp8.safetensors?download=true
-RUN wget -O models/loras/Hyper-FLUX.1-dev-8steps-lora_rank1.safetensors https://huggingface.co/bdsqlsz/Hyper-Flux1-dev/resolve/main/Hyper-FLUX.1-dev-8steps-lora_rank1.safetensors?download=true
-RUN wget -O models/loras/pixel-art-flux-v3-learning-rate-4.safetensors http://112.94.31.89:9095/pixel-art-flux-v3-learning-rate-4.safetensors
-#RUN wget -O models/loras/pixel-art-flux-v3-learning-rate-4.safetensors https://civitai.com/api/download/models/833669?type=Model&format=SafeTensor
 RUN wget -O models/controlnet/diffusion_pytorch_model.safetensors https://huggingface.co/Shakker-Labs/FLUX.1-dev-ControlNet-Union-Pro/resolve/main/diffusion_pytorch_model.safetensors?download=true
 
 # Install custom nodes
