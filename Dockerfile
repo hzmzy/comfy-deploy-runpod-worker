@@ -60,10 +60,13 @@ WORKDIR /comfyui/custom_nodes
 RUN git clone --depth 1 https://github.com/ltdrdata/ComfyUI-Manager.git
 RUN cd ComfyUI-Manager && pip3 install -r requirements.txt
 
+WORKDIR /comfyui/custom_nodes/ComfyUI-Manager/startup-scripts
+ADD *_snapshot.json ./
+RUN mv *_snapshot.json restore-snapshot.json
 
 WORKDIR /comfyui
 
-ADD src/extra_model_paths.yaml *_snapshot.json ./
+ADD src/extra_model_paths.yaml ./
 
 # Go back to the root
 WORKDIR /
@@ -76,13 +79,6 @@ WORKDIR /comfyui/custom_nodes
 
 RUN git clone https://github.com/BennyKok/comfyui-deploy.git && cd comfyui-deploy && git reset --hard 6e068590a0831d10009074e65d23a083b31dd2d7
 RUN cd comfyui-deploy && pip3 install -r requirements.txt
-
-RUN git clone https://github.com/yolain/ComfyUI-Easy-Use.git
-RUN git clone https://github.com/kijai/ComfyUI-KJNodes.git
-RUN git clone https://github.com/ltdrdata/ComfyUI-Manager.git
-RUN git clone https://github.com/EllangoK/ComfyUI-post-processing-nodes.git
-RUN git clone https://github.com/Suzie1/ComfyUI_Comfyroll_CustomNodes.git
-RUN git clone https://github.com/chflame163/ComfyUI_LayerStyle.git
 
 WORKDIR /
 
