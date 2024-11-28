@@ -49,7 +49,7 @@ RUN pip3 install runpod requests
 
 ADD  models/loras/Hyper-FLUX.1-dev-8steps-lora_rank1.safetensors models/loras/
 ADD  models/loras/pixel-art-flux-v3-learning-rate-4.safetensors models/loras/
-ADD  models/checkpoints/flux1-dev-fp8.safetensors models/checkpoints/
+#ADD  models/checkpoints/flux1-dev-fp8.safetensors models/checkpoints/
 
 RUN wget -O models/controlnet/diffusion_pytorch_model.safetensors https://huggingface.co/Shakker-Labs/FLUX.1-dev-ControlNet-Union-Pro/resolve/main/diffusion_pytorch_model.safetensors?download=true
 
