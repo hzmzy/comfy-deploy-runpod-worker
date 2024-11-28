@@ -72,8 +72,8 @@ ADD src/extra_model_paths.yaml ./
 WORKDIR /
 
 # RUN git clone https://github.com/ssitu/ComfyUI_UltimateSDUpscale --recursive
-ADD src/install_deps.py src/deps.json ./
-RUN python3 install_deps.py
+# ADD src/install_deps.py src/deps.json ./
+# RUN python3 install_deps.py
 
 WORKDIR /comfyui/custom_nodes
 
