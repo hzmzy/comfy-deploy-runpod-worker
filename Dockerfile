@@ -38,7 +38,7 @@ RUN pip3 install -r requirements.txt
 RUN pip3 install runpod requests
 
 # Download checkpoints/vae/LoRA to include in image
-RUN wget -O models/checkpoints/sd_xl_base_1.0.safetensors https://huggingface.co/stabilityai/stable-diffusion-xl-base-1.0/resolve/main/sd_xl_base_1.0.safetensors
+# RUN wget -O models/checkpoints/sd_xl_base_1.0.safetensors https://huggingface.co/stabilityai/stable-diffusion-xl-base-1.0/resolve/main/sd_xl_base_1.0.safetensors
 # RUN wget -O models/vae/sdxl_vae.safetensors https://huggingface.co/stabilityai/sdxl-vae/resolve/main/sdxl_vae.safetensors
 # RUN wget -O models/vae/sdxl-vae-fp16-fix.safetensors https://huggingface.co/madebyollin/sdxl-vae-fp16-fix/resolve/main/sdxl_vae.safetensors
 # RUN wget -O models/loras/xl_more_art-full_v1.safetensors https://civitai.com/api/download/models/152309
@@ -49,9 +49,10 @@ RUN wget -O models/checkpoints/sd_xl_base_1.0.safetensors https://huggingface.co
 
 ADD  models/loras/Hyper-FLUX.1-dev-8steps-lora_rank1.safetensors models/loras/
 ADD  models/loras/pixel-art-flux-v3-learning-rate-4.safetensors models/loras/
-#ADD  models/checkpoints/flux1-dev-fp8.safetensors models/checkpoints/
 
-RUN wget -O models/controlnet/diffusion_pytorch_model.safetensors https://huggingface.co/Shakker-Labs/FLUX.1-dev-ControlNet-Union-Pro/resolve/main/diffusion_pytorch_model.safetensors?download=true
+
+RUN wget -O models/checkpoints/flux1-dev-fp8.safetensors https://huggingface.co/Comfy-Org/flux1-dev/resolve/main/flux1-dev-fp8.safetensors
+RUN wget -O models/controlnet/diffusion_pytorch_model.safetensors https://huggingface.co/Shakker-Labs/FLUX.1-dev-ControlNet-Union-Pro/resolve/main/diffusion_pytorch_model.safetensors
 
 # Install custom nodes
 
