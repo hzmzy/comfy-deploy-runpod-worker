@@ -1,6 +1,6 @@
 {
 	"input": {
-		"workflow_api": {
+		"workflow": {
 			"3": {
 				"inputs": {
 					"seed": 1337,
