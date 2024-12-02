@@ -15,6 +15,8 @@ RUN apt-get update && apt-get install -y \
     git \
     wget
 
+RUN pip install --upgrade pip
+
 # Impact pack deps
 RUN apt-get install -y libgl1-mesa-glx libglib2.0-0
 
@@ -92,11 +94,11 @@ RUN git clone https://github.com/EllangoK/ComfyUI-post-processing-nodes.git
 RUN git clone https://github.com/Suzie1/ComfyUI_Comfyroll_CustomNodes.git
 RUN git clone https://github.com/chflame163/ComfyUI_LayerStyle.git
 
-RUN cd ComfyUI_LayerStyle && pip3 install  whl/docopt-0.6.2-py2.py3-none-any.whl && pip3 install whl/hydra_core-1.3.2-py3-none-any.whl 
-RUN cd ComfyUI_LayerStyle && pip3 install -r requirements.txt
-RUN cd ComfyUI_LayerStyle && pip3 uninstall -y onnxruntime 
-RUN cd ComfyUI_LayerStyle && pip3 uninstall -y opencv-python opencv-contrib-python opencv-python-headless opencv-contrib-python-headless
-RUN cd ComfyUI_LayerStyle && pip3 install -r repair_dependency_list.txt
+RUN cd ComfyUI_LayerStyle && pip install  whl/docopt-0.6.2-py2.py3-none-any.whl && pip3 install whl/hydra_core-1.3.2-py3-none-any.whl 
+RUN cd ComfyUI_LayerStyle && pip install -r requirements.txt --use-deprecated legacy-resolver
+RUN cd ComfyUI_LayerStyle && pip uninstall -y onnxruntime 
+RUN cd ComfyUI_LayerStyle && pip uninstall -y opencv-python opencv-contrib-python opencv-python-headless opencv-contrib-python-headless
+RUN cd ComfyUI_LayerStyle && pip install -r repair_dependency_list.txt 
 		
 	
 
