@@ -47,15 +47,15 @@ RUN pip3 install runpod requests
 # ADD models/checkpoints/sd_xl_base_1.0.safetensors models/checkpoints/
 # ADD models/vae/sdxl_vae.safetensors models/vae/
 
-ADD  models/loras/Hyper-FLUX.1-dev-8steps-lora_rank1.safetensors models/loras/
-ADD  models/loras/pixel-art-flux-v3-learning-rate-4.safetensors models/loras/
+# ADD  models/loras/Hyper-FLUX.1-dev-8steps-lora_rank1.safetensors models/loras/
+# ADD  models/loras/pixel-art-flux-v3-learning-rate-4.safetensors models/loras/
 
 # ADD  models/checkpoints/flux1-dev-fp8.safetensors models/checkpoints/
 # ADD  models/controlnet/diffusion_pytorch_model.safetensors models/controlnet/
 
 
-RUN wget -O models/checkpoints/flux1-dev-fp8.safetensors https://huggingface.co/Comfy-Org/flux1-dev/resolve/main/flux1-dev-fp8.safetensors
-RUN wget -O models/controlnet/diffusion_pytorch_model.safetensors https://huggingface.co/Shakker-Labs/FLUX.1-dev-ControlNet-Union-Pro/resolve/main/diffusion_pytorch_model.safetensors
+#RUN wget -O models/checkpoints/flux1-dev-fp8.safetensors https://huggingface.co/Comfy-Org/flux1-dev/resolve/main/flux1-dev-fp8.safetensors
+#RUN wget -O models/controlnet/diffusion_pytorch_model.safetensors https://huggingface.co/Shakker-Labs/FLUX.1-dev-ControlNet-Union-Pro/resolve/main/diffusion_pytorch_model.safetensors
 
 # Install custom nodes
 
