@@ -50,6 +50,9 @@ RUN pip3 install runpod requests
 ADD  models/loras/Hyper-FLUX.1-dev-8steps-lora_rank1.safetensors models/loras/
 ADD  models/loras/pixel-art-flux-v3-learning-rate-4.safetensors models/loras/
 
+# ADD  models/checkpoints/flux1-dev-fp8.safetensors models/checkpoints/
+# ADD  models/controlnet/diffusion_pytorch_model.safetensors models/controlnet/
+
 
 RUN wget -O models/checkpoints/flux1-dev-fp8.safetensors https://huggingface.co/Comfy-Org/flux1-dev/resolve/main/flux1-dev-fp8.safetensors
 RUN wget -O models/controlnet/diffusion_pytorch_model.safetensors https://huggingface.co/Shakker-Labs/FLUX.1-dev-ControlNet-Union-Pro/resolve/main/diffusion_pytorch_model.safetensors
@@ -61,9 +64,9 @@ WORKDIR /comfyui/custom_nodes
 RUN git clone --depth 1 https://github.com/ltdrdata/ComfyUI-Manager.git
 RUN cd ComfyUI-Manager && pip3 install -r requirements.txt
 
-WORKDIR /comfyui/custom_nodes/ComfyUI-Manager/startup-scripts
-ADD *_snapshot.json ./
-RUN mv *_snapshot.json restore-snapshot.json
+#WORKDIR /comfyui/custom_nodes/ComfyUI-Manager/startup-scripts
+#ADD *_snapshot.json ./
+#RUN mv *_snapshot.json restore-snapshot.json
 
 WORKDIR /comfyui
 
@@ -78,13 +81,34 @@ WORKDIR /
 
 WORKDIR /comfyui/custom_nodes
 
-RUN git clone https://github.com/BennyKok/comfyui-deploy.git && cd comfyui-deploy && git reset --hard 6e068590a0831d10009074e65d23a083b31dd2d7
-RUN cd comfyui-deploy && pip3 install -r requirements.txt
+#RUN git clone https://github.com/BennyKok/comfyui-deploy.git && cd comfyui-deploy && git reset --hard 6e068590a0831d10009074e65d23a083b31dd2d7
+#RUN cd comfyui-deploy && pip3 install -r requirements.txt
+
+RUN git clone https://github.com/yolain/ComfyUI-Easy-Use.git
+RUN cd ComfyUI-Easy-Use && pip3 install -r requirements.txt
+RUN git clone https://github.com/kijai/ComfyUI-KJNodes.git
+RUN cd ComfyUI-KJNodes && pip3 install -r requirements.txt
+RUN git clone https://github.com/EllangoK/ComfyUI-post-processing-nodes.git
+RUN git clone https://github.com/Suzie1/ComfyUI_Comfyroll_CustomNodes.git
+RUN git clone https://github.com/chflame163/ComfyUI_LayerStyle.git
+
+RUN cd ComfyUI_LayerStyle && pip3 install  whl/docopt-0.6.2-py2.py3-none-any.whl && pip3 install whl/hydra_core-1.3.2-py3-none-any.whl 
+RUN cd ComfyUI_LayerStyle && pip3 install -r requirements.txt
+RUN cd ComfyUI_LayerStyle && pip3 uninstall -y onnxruntime 
+RUN cd ComfyUI_LayerStyle && pip3 uninstall -y opencv-python opencv-contrib-python opencv-python-headless opencv-contrib-python-headless
+RUN cd ComfyUI_LayerStyle && pip3 install -r repair_dependency_list.txt
+		
+	
+
 
 WORKDIR /
 
 # Add the start and the handler
-ADD src/start.sh src/rp_handler.py test_input.json *_snapshot.json ./
+ADD src/start.sh src/rp_handler.py test_input.json  ./
+
+VOLUME /comfyui/models
+VOLUME /comfyui/output
+
 RUN chmod +x /start.sh
 
 
