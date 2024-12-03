@@ -2,13 +2,14 @@ version: "3.8"
 
 services:
   comfyui:
-    # image: timpietruskyblibla/runpod-worker-comfy:1.0.0
+    image: hzmdocker/runpod-worker-comfy:dev
     build: 
       context: .
       dockerfile: Dockerfile
     container_name: comfyui-worker
     environment:
       - NVIDIA_VISIBLE_DEVICES=all
+      - SERVE_API_LOCALLY=true
     env_file:
       - .env
     runtime: nvidia

@@ -49,7 +49,7 @@
 			},
 			"3": {
 				"inputs": {
-					"filename_prefix": "flux/cn_",
+					"filename_prefix": "cn_",
 					"images": [
 						"2",
 						0

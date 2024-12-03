@@ -59,6 +59,12 @@ RUN pip3 install runpod requests
 #RUN wget -O models/checkpoints/flux1-dev-fp8.safetensors https://huggingface.co/Comfy-Org/flux1-dev/resolve/main/flux1-dev-fp8.safetensors
 #RUN wget -O models/controlnet/diffusion_pytorch_model.safetensors https://huggingface.co/Shakker-Labs/FLUX.1-dev-ControlNet-Union-Pro/resolve/main/diffusion_pytorch_model.safetensors
 
+
+#RUN  mkdir -p models/florence2/CogFlorence-2.1-Large
+#ADD  models/florence2/CogFlorence-2.1-Large/* models/florence2/CogFlorence-2.1-Large/
+#RUN  wget -O models/florence2/CogFlorence-2.1-Large/model.safetensors https://huggingface.co/thwri/CogFlorence-2.1-Large/resolve/main/model.safetensors
+
+
 # Install custom nodes
 
 WORKDIR /comfyui/custom_nodes

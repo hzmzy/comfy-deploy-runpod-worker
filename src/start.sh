@@ -7,5 +7,6 @@ export LD_PRELOAD="${TCMALLOC}"
 echo "runpod-worker-comfy: Starting ComfyUI"
 python3 /comfyui/main.py  --disable-auto-launch --disable-metadata &
 
-echo "runpod-worker-comfy: Starting RunPod Handler"
+# start local api server -rp_serve_api http://localhost:8000
+echo "runpod-worker-comfy: Starting RunPod Handler " 
 python3 -u /rp_handler.py
