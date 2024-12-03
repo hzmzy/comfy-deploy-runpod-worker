@@ -364,8 +364,8 @@ def handler(job):
 
     # Get the generated image and return it as URL in an AWS bucket or as base64
     images_result = process_output_images(history[prompt_id].get("outputs"), job["id"])
-    # result = {**images_result, "refresh_worker": REFRESH_WORKER}
-    result = { "status": status, "refresh_worker": REFRESH_WORKER }
+    result = {**images_result, "refresh_worker": REFRESH_WORKER}
+    #result = { "status": status, "refresh_worker": REFRESH_WORKER }
 
     return result
 

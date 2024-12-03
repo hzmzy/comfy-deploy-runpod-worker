@@ -108,8 +108,11 @@ WORKDIR /
 # Add the start and the handler
 ADD src/start.sh src/rp_handler.py test_input.json  ./
 
+
 VOLUME /comfyui/models
+VOLUME /comfyui/input
 VOLUME /comfyui/output
+
 
 RUN chmod +x /start.sh
 
