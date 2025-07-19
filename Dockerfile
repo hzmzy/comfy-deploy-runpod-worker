@@ -56,15 +56,6 @@ RUN  mkdir -p models/insightface/models/buffalo_l
 RUN  wget -O models/insightface/models/buffalo_l/buffalo_l.zip https://github.com/deepinsight/insightface/releases/download/v0.7/buffalo_l.zip
 #解压 buffalo_l.zip 到当前目录
 RUN unzip models/insightface/models/buffalo_l/buffalo_l.zip -d models/insightface/models/buffalo_l
-#loras
-RUN  wget -O models/loras/Realism_Lora_By_Stable_yogi_SDXL8.1.safetensors https://huggingface.co/woods55/mine/resolve/main/Realism_Lora_By_Stable_yogi_SDXL8.1.safetensors?download=true
-RUN  wget -O models/loras/Super_Skin_Detailer_By_Stable_Yogi_PD0_V1.safetensors https://huggingface.co/woods55/mine/resolve/main/Super_Skin_Detailer_By_Stable_Yogi_PD0_V1.safetensors?download=true
-#embeddings
-RUN  wget -O models/embeddings/Stable_Yogis_PDXL_Positives.safetensors https://huggingface.co/woods55/mine/resolve/main/Stable_Yogis_PDXL_Positives.safetensors?download=true
-RUN  wget -O models/embeddings/Stable_Yogis_PDXL_Negatives-neg.safetensors https://huggingface.co/woods55/mine/resolve/main/Stable_Yogis_PDXL_Negatives-neg.safetensors?download=true
-
-#checkpoints
-RUN  wget -O models/checkpoints/realismByStableYogi_v50FP16.safetensors https://huggingface.co/woods55/mine/resolve/main/realismByStableYogi_v50FP16.safetensors?download=true
 
 
 # Install custom nodes
