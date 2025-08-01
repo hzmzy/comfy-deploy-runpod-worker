@@ -32,7 +32,7 @@ RUN cd /comfyui && git reset --hard 1e638a140b2f459595fafc73ade5ea5b4024d4b4
 WORKDIR /comfyui
 
 # Install ComfyUI dependencies
-RUN pip3 install --no-cache-dir torch==2.5.1 torchvision==0.16.1 torchaudio==2.1.1 --index-url https://download.pytorch.org/whl/cu124
+RUN pip3 install --no-cache-dir torch==2.5.1 torchvision==0.20.1+cu124 torchaudio==22.1.1+cu124 --index-url https://download.pytorch.org/whl/cu124
 RUN pip3 install --no-cache-dir xformers==0.0.23 --index-url https://download.pytorch.org/whl/cu124
 RUN pip3 install -r requirements.txt
 
