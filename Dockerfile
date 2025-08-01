@@ -20,15 +20,13 @@ RUN pip install --upgrade pip
 # Impact pack deps
 RUN apt-get install -y libgl1-mesa-glx libglib2.0-0
 
-RUN apt-get install -y unzip
-
 # Clean up to reduce image size
 RUN apt-get autoremove -y && apt-get clean -y && rm -rf /var/lib/apt/lists/*
 
 # Clone ComfyUI repository
 RUN git clone https://github.com/comfyanonymous/ComfyUI.git /comfyui
 # Force comfyui on a specific version
-RUN cd /comfyui && git reset --hard b12b48e170ccff156dc6ec11242bb6af7d8437fd
+RUN cd /comfyui && git reset --hard 1e638a140b2f459595fafc73ade5ea5b4024d4b4
 
 # Change working directory to ComfyUI
 WORKDIR /comfyui
@@ -43,28 +41,17 @@ RUN pip3 install -r requirements.txt
 RUN pip3 install runpod requests
 
 
-# ReActor models
-RUN  mkdir -p models/facerestore_models
-RUN  wget -O models/facerestore_models/codeformer-v0.1.0.pth https://huggingface.co/FMNing/codeformer-v0.1.0/resolve/main/codeformer-v0.1.0.pth
-RUN  mkdir -p models/facedetection
-RUN  wget -O models/facedetection/parsing_parsenet.pth https://github.com/sczhou/CodeFormer/releases/download/v0.1.0/parsing_parsenet.pth
-RUN  mkdir -p models/facedetection
-RUN  wget -O models/facedetection/detection_Resnet50_Final.pth https://github.com/xinntao/facexlib/releases/download/v0.1.0/detection_Resnet50_Final.pth
-RUN  mkdir -p models/insightface
-RUN  wget -O models/insightface/inswapper_128.onnx https://huggingface.co/ezioruan/inswapper_128.onnx/resolve/main/inswapper_128.onnx
-RUN  mkdir -p models/insightface/models/buffalo_l
-RUN  wget -O models/insightface/models/buffalo_l/buffalo_l.zip https://github.com/deepinsight/insightface/releases/download/v0.7/buffalo_l.zip
-#解压 buffalo_l.zip 到当前目录
-RUN unzip models/insightface/models/buffalo_l/buffalo_l.zip -d models/insightface/models/buffalo_l
-#loras
-RUN  wget -O models/loras/Realism_Lora_By_Stable_yogi_SDXL8.1.safetensors https://huggingface.co/woods55/mine/resolve/main/Realism_Lora_By_Stable_yogi_SDXL8.1.safetensors?download=true
-RUN  wget -O models/loras/Super_Skin_Detailer_By_Stable_Yogi_PD0_V1.safetensors https://huggingface.co/woods55/mine/resolve/main/Super_Skin_Detailer_By_Stable_Yogi_PD0_V1.safetensors?download=true
-#embeddings
-RUN  wget -O models/embeddings/Stable_Yogis_PDXL_Positives.safetensors https://huggingface.co/woods55/mine/resolve/main/Stable_Yogis_PDXL_Positives.safetensors?download=true
-RUN  wget -O models/embeddings/Stable_Yogis_PDXL_Negatives-neg.safetensors https://huggingface.co/woods55/mine/resolve/main/Stable_Yogis_PDXL_Negatives-neg.safetensors?download=true
+# upscale_models
+RUN  wget -O models/upscale_models/4x-UltraSharp.pth https://huggingface.co/woods55/mine/resolve/main/4xLSDIR.pth?download=true
 
-#checkpoints
-RUN  wget -O models/checkpoints/realismByStableYogi_v50FP16.safetensors https://huggingface.co/woods55/mine/resolve/main/realismByStableYogi_v50FP16.safetensors?download=true
+#loras
+RUN  wget -O models/loras/Wan21_T2V_14B_lightx2v_cfg_step_distill_lora_rank32.safetensors https://huggingface.co/woods55/mine/resolve/main/Wan21_T2V_14B_lightx2v_cfg_step_distill_lora_rank32.safetensors?download=true
+#vae
+RUN  wget -O models/vae/wan2.2_vae.safetensors https://huggingface.co/Comfy-Org/Wan_2.2_ComfyUI_Repackaged/resolve/main/split_files/vae/wan2.2_vae.safetensors
+#diffusion_models
+RUN  wget -O models/diffusion_models/wan2.2_ti2v_5B_fp16.safetensors https://huggingface.co/Comfy-Org/Wan_2.2_ComfyUI_Repackaged/resolve/main/split_files/diffusion_models/wan2.2_ti2v_5B_fp16.safetensors
+#vae
+RUN  wget -O models/text_encoders/umt5_xxl_fp8_e4m3fn_scaled.safetensors https://huggingface.co/Comfy-Org/Wan_2.1_ComfyUI_repackaged/resolve/main/split_files/text_encoders/umt5_xxl_fp8_e4m3fn_scaled.safetensors
 
 
 # Install custom nodes
@@ -95,9 +82,8 @@ RUN cd comfyui-deploy && pip3 install -r requirements.txt
 
 
 # 安装 onnxruntime 运行时
-RUN pip3 install --no-cache-dir onnxruntime-gpu
-RUN git clone https://github.com/ZooHero500/comfyui-reactor-node.git
-RUN cd comfyui-reactor-node && pip3 install -r requirements.txt
+RUN git clone https://github.com/Kosinkadink/ComfyUI-VideoHelperSuite.git
+RUN cd ComfyUI-VideoHelperSuite && pip3 install -r requirements.txt
 
 
 WORKDIR /
