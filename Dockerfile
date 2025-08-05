@@ -57,8 +57,8 @@ RUN  wget -O models/text_encoders/umt5_xxl_fp8_e4m3fn_scaled.safetensors https:/
 
 WORKDIR /comfyui/custom_nodes
 
-#RUN git clone --depth 1 https://github.com/ltdrdata/ComfyUI-Manager.git
-#RUN cd ComfyUI-Manager && pip3 install -r requirements.txt
+RUN git clone --depth 1 https://github.com/ltdrdata/ComfyUI-Manager.git
+RUN cd ComfyUI-Manager && pip3 install -r requirements.txt
 
 #WORKDIR /comfyui/custom_nodes/ComfyUI-Manager/startup-scripts
 #ADD *_snapshot.json ./
