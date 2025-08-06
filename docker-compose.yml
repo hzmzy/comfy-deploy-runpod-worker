@@ -1,17 +1,19 @@
-version: "3.8"
-
 services:
-  comfyui:
-    image: hzmdocker/runpod-worker-comfy:dev
-    build: 
-      context: .
-      dockerfile: Dockerfile
-    container_name: comfyui-worker
+  comfyui-worker:
+    image: runpod/worker-comfyui:dev
+    pull_policy: never
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
     environment:
-      - NVIDIA_VISIBLE_DEVICES=all
       - SERVE_API_LOCALLY=true
-    env_file:
-      - .env
-    runtime: nvidia
+    ports:
+      - "8000:8000"
+      - "8188:8188"
     volumes:
       - ./data/comfyui/output:/comfyui/output
+      - ./data/runpod-volume:/runpod-volume
