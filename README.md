@@ -1,4 +1,4 @@
-# runpod-worker-comfy
+# worker-comfyui
 
 > [ComfyUI](https://github.com/comfyanonymous/ComfyUI) as a serverless API on [RunPod](https://www.runpod.io/)
 
@@ -6,263 +6,183 @@
   <img src="assets/worker_sitting_in_comfy_chair.jpg" title="Worker sitting in comfy chair" />
 </p>
 
+[![RunPod](https://api.runpod.io/badge/runpod-workers/worker-comfyui)](https://www.runpod.io/console/hub/runpod-workers/worker-comfyui)
+
 ---
 
-<!-- toc -->
+This project allows you to run ComfyUI workflows as a serverless API endpoint on the RunPod platform. Submit workflows via API calls and receive generated images as base64 strings or S3 URLs.
+
+## Table of Contents
 
 - [Quickstart](#quickstart)
-- [Features](#features)
-- [Config](#config)
-  * [Upload image to AWS S3](#upload-image-to-aws-s3)
-- [Use the Docker image on RunPod](#use-the-docker-image-on-runpod)
-- [API specification](#api-specification)
-  * [JSON Request Body](#json-request-body)
-  * [Fields](#fields)
-    + ["input.images"](#inputimages)
-- [Interact with your RunPod API](#interact-with-your-runpod-api)
-  * [Health status](#health-status)
-  * [Generate an image](#generate-an-image)
-    + [Example request with cURL](#example-request-with-curl)
-- [How to get the workflow from ComfyUI?](#how-to-get-the-workflow-from-comfyui)
-- [Build the image](#build-the-image)
-- [Local testing](#local-testing)
-  * [Setup](#setup)
-    + [Setup for Windows](#setup-for-windows)
-  * [Test: handler](#test-handler)
-  * [Test: docker image](#test-docker-image)
-- [Automatically deploy to Docker hub with Github Actions](#automatically-deploy-to-docker-hub-with-github-actions)
-- [Acknowledgments](#acknowledgments)
-
-<!-- tocstop -->
+- [Available Docker Images](#available-docker-images)
+- [API Specification](#api-specification)
+- [Usage](#usage)
+- [Getting the Workflow JSON](#getting-the-workflow-json)
+- [Further Documentation](#further-documentation)
 
 ---
 
 ## Quickstart
 
-- 🐳 Use the latest image for your worker: [timpietruskyblibla/runpod-worker-comfy:latest](https://hub.docker.com/r/timpietruskyblibla/runpod-worker-comfy)
-- ⚙️ [Set the environment variables](#config)
-- ℹ️ [Use the Docker image on RunPod](#use-the-docker-image-on-runpod)
+1.  🐳 Choose one of the [available Docker images](#available-docker-images) for your serverless endpoint (e.g., `runpod/worker-comfyui:<version>-sd3`).
+2.  📄 Follow the [Deployment Guide](docs/deployment.md) to set up your RunPod template and endpoint.
+3.  ⚙️ Optionally configure the worker (e.g., for S3 upload) using environment variables - see the full [Configuration Guide](docs/configuration.md).
+4.  🧪 Pick an example workflow from [`test_resources/workflows/`](./test_resources/workflows/) or [get your own](#getting-the-workflow-json).
+5.  🚀 Follow the [Usage](#usage) steps below to interact with your deployed endpoint.
 
-## Features
+## Available Docker Images
 
-- Run any [ComfyUI](https://github.com/comfyanonymous/ComfyUI) workflow to generate an image
-- Provide input images as base64-encoded string
-- The generated image is either:
-  - Returned as base64-encoded string (default)
-  - Uploaded to AWS S3 ([if AWS S3 is configured](#upload-image-to-aws-s3))
-- Build-in checkpoint:
-  - [sd_xl_base_1.0.safetensors](https://huggingface.co/stabilityai/stable-diffusion-xl-base-1.0)
-- Build-in VAE:
-  - [sdxl_vae.safetensors](https://huggingface.co/stabilityai/sdxl-vae/)
-  - [sdxl-vae-fp16-fix](https://huggingface.co/madebyollin/sdxl-vae-fp16-fix/)
-- Build-in LoRA:
-  - [xl_more_art-full_v1.safetensors](https://civitai.com/models/124347?modelVersionId=152309) (Enhancer)
-- Based on [Ubuntu + NVIDIA CUDA](https://hub.docker.com/r/nvidia/cuda)
+These images are available on Docker Hub under `runpod/worker-comfyui`:
 
-## Config
+- **`runpod/worker-comfyui:<version>-base`**: Clean ComfyUI install with no models.
+- **`runpod/worker-comfyui:<version>-flux1-schnell`**: Includes checkpoint, text encoders, and VAE for [FLUX.1 schnell](https://huggingface.co/black-forest-labs/FLUX.1-schnell).
+- **`runpod/worker-comfyui:<version>-flux1-dev`**: Includes checkpoint, text encoders, and VAE for [FLUX.1 dev](https://huggingface.co/black-forest-labs/FLUX.1-dev).
+- **`runpod/worker-comfyui:<version>-sdxl`**: Includes checkpoint and VAEs for [Stable Diffusion XL](https://huggingface.co/stabilityai/stable-diffusion-xl-base-1.0).
+- **`runpod/worker-comfyui:<version>-sd3`**: Includes checkpoint for [Stable Diffusion 3 medium](https://huggingface.co/stabilityai/stable-diffusion-3-medium).
 
-| Environment Variable | Description                                                                                                                                                                        | Default |
-| -------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------- |
-| `REFRESH_WORKER`     | When you want stop the worker after each finished job to have a clean state, see [official documentation](https://docs.runpod.io/docs/handler-additional-controls#refresh-worker). | `false` |
+Replace `<version>` with the current release tag, check the [releases page](https://github.com/runpod-workers/worker-comfyui/releases) for the latest version.
 
-### Upload image to AWS S3
+## API Specification
 
-This is only needed if you want to upload the generated picture to AWS S3. If you don't configure this, your image will be exported as base64-encoded string.
+The worker exposes standard RunPod serverless endpoints (`/run`, `/runsync`, `/health`). By default, images are returned as base64 strings. You can configure the worker to upload images to an S3 bucket instead by setting specific environment variables (see [Configuration Guide](docs/configuration.md)).
 
-- Create a bucket in region of your choice in AWS S3 (`BUCKET_ENDPOINT_URL`)
-- Create an IAM that has access rights to AWS S3
-- Create an Access-Key (`BUCKET_ACCESS_KEY_ID` & `BUCKET_SECRET_ACCESS_KEY`) for that IAM
-- Configure these environment variables for your RunPod worker:
+Use the `/runsync` endpoint for synchronous requests that wait for the job to complete and return the result directly. Use the `/run` endpoint for asynchronous requests that return immediately with a job ID; you'll need to poll the `/status` endpoint separately to get the result.
 
-| Environment Variable       | Description                                             | Example                                      |
-| -------------------------- | ------------------------------------------------------- | -------------------------------------------- |
-| `BUCKET_ENDPOINT_URL`      | The endpoint URL of your S3 bucket.                     | `https://<bucket>.s3.<region>.amazonaws.com` |
-| `BUCKET_ACCESS_KEY_ID`     | Your AWS access key ID for accessing the S3 bucket.     | `AKIAIOSFODNN7EXAMPLE`                       |
-| `BUCKET_SECRET_ACCESS_KEY` | Your AWS secret access key for accessing the S3 bucket. | `wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY`   |
-
-## Use the Docker image on RunPod
-
-- Create a [new template](https://runpod.io/console/serverless/user/templates) by clicking on `New Template`
-- In the dialog, configure:
-  - Template Name: `runpod-worker-comfy` (it can be anything you want)
-  - Container Image: `<dockerhub_username>/<repository_name>:tag`, in this case: `timpietruskyblibla/runpod-worker-comfy:latest` (or `dev` if you want to have the development release)
-  - Container Registry Credentials: You can leave everything as it is, as this repo is public
-  - Container Disk: `20 GB`
-  - Enviroment Variables: [Configure S3](#upload-image-to-aws-s3)
-    - Note: You can also not configure it, the images will then stay in the worker. In order to have them stored permanently, [we have to add the network volume](https://github.com/blib-la/runpod-worker-comfy/issues/1)
-- Click on `Save Template`
-- Navigate to [`Serverless > Endpoints`](https://www.runpod.io/console/serverless/user/endpoints) and click on `New Endpoint`
-- In the dialog, configure:
-  - Endpoint Name: `comfy`
-  - Select Template: `runpow-worker-comfy` (or whatever name you gave your template)
-  - Active Workers: `0` (whatever makes sense for you)
-  - Max Workers: `3` (whatever makes sense for you)
-  - Idle Timeout: `5` (you can leave the default)
-  - Flash Boot: `enabled` (doesn't cost more, but provides faster boot of our worker, which is good)
-  - Advanced: Leave the defaults
-  - Select a GPU that has some availability
-  - GPUs/Worker: `1`
-- Click `deploy`
-- Your endpoint will be created, you can click on it to see the dashboard
-
-## API specification
-
-The following describes which fields exist when doing requests to the API. We only describe the fields that are sent via `input` as those are needed by the worker itself. For a full list of fields, please take a look at the [official documentation](https://docs.runpod.io/docs/serverless-usage). 
-
-### JSON Request Body
+### Input
 
 ```json
 {
   "input": {
-    "workflow": {},
+    "workflow": {
+      "6": {
+        "inputs": {
+          "text": "a ball on the table",
+          "clip": ["30", 1]
+        },
+        "class_type": "CLIPTextEncode",
+        "_meta": {
+          "title": "CLIP Text Encode (Positive Prompt)"
+        }
+      }
+    },
     "images": [
       {
-        "name": "example_image_name.png",
-        "image": "base64_encoded_string"
+        "name": "input_image_1.png",
+        "image": "data:image/png;base64,iVBOR..."
       }
     ]
   }
 }
 ```
 
-### Fields
+The following tables describe the fields within the `input` object:
 
-| Field Path       | Type   | Required | Description                                                                                                                               |
-| ---------------- | ------ | -------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
-| `input`          | Object | Yes      | The top-level object containing the request data.                                                                                         |
-| `input.workflow` | Object | Yes      | Contains the ComfyUI workflow configuration.                                                                                              |
-| `input.images`   | Array  | No       | An array of images. Each image will be added into the "input"-folder of ComfyUI and can then be used in the workflow by using it's `name` |
+| Field Path       | Type   | Required | Description                                                                                                                                |
+| ---------------- | ------ | -------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| `input`          | Object | Yes      | Top-level object containing request data.                                                                                                  |
+| `input.workflow` | Object | Yes      | The ComfyUI workflow exported in the [required format](#getting-the-workflow-json).                                                        |
+| `input.images`   | Array  | No       | Optional array of input images. Each image is uploaded to ComfyUI's `input` directory and can be referenced by its `name` in the workflow. |
 
+#### `input.images` Object
 
-#### "input.images"
+Each object within the `input.images` array must contain:
 
-An array of images, where each image should have a different name. 
+| Field Name | Type   | Required | Description                                                                                                                       |
+| ---------- | ------ | -------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| `name`     | String | Yes      | Filename used to reference the image in the workflow (e.g., via a "Load Image" node). Must be unique within the array.            |
+| `image`    | String | Yes      | Base64 encoded string of the image. A data URI prefix (e.g., `data:image/png;base64,`) is optional and will be handled correctly. |
 
-🚨 The request body for a RunPod endpoint is 10 MB for `/run` and 20 MB for `/runsync`, so make sure that your input images are not super huge as this will be blocked by RunPod otherwise, see the [official documentation](https://docs.runpod.io/docs/serverless-endpoint-urls)
+> [!NOTE]
+>
+> **Size Limits:** RunPod endpoints have request size limits (e.g., 10MB for `/run`, 20MB for `/runsync`). Large base64 input images can exceed these limits. See [RunPod Docs](https://docs.runpod.io/docs/serverless-endpoint-urls).
 
-| Field Name | Type   | Required | Description                                                                              |
-| ---------- | ------ | -------- | ---------------------------------------------------------------------------------------- |
-| `name`     | String | Yes      | The name of the image. Please use the same name in your workflow to reference the image. |
-| `image`    | String | Yes      | A base64 encoded string of the image.                                                    |
+### Output
 
+> [!WARNING]
+>
+> **Breaking Change in Output Format (5.0.0+)**
+>
+> Versions `< 5.0.0` returned the primary image data (S3 URL or base64 string) directly within an `output.message` field.
+> Starting with `5.0.0`, the output format has changed significantly, see below
 
-
-## Interact with your RunPod API
-
-- In the [User Settings](https://www.runpod.io/console/serverless/user/settings) click on `API Keys` and then on the `API Key` button
-- Save the generated key somewhere, as you will not be able to see it again when you navigate away from the page
-- Use cURL or any other tool to access the API using the API key and your Endpoint-ID:
-  - Replace `<api_key>` with your key
-  - Replace `<endpoint_id>` with the ID of the endpoint, you find that when you click on your endpoint, it's part of the URLs shown at the bottom of the first box
-
-
-
-### Health status
-
-```bash
-curl -H "Authorization: Bearer <api_key>" https://api.runpod.ai/v2/<endpoint_id>/health
+```json
+{
+  "id": "sync-uuid-string",
+  "status": "COMPLETED",
+  "output": {
+    "images": [
+      {
+        "filename": "ComfyUI_00001_.png",
+        "type": "base64",
+        "data": "iVBORw0KGgoAAAANSUhEUg..."
+      }
+    ]
+  },
+  "delayTime": 123,
+  "executionTime": 4567
+}
 ```
 
-### Generate an image
+| Field Path      | Type             | Required | Description                                                                                                 |
+| --------------- | ---------------- | -------- | ----------------------------------------------------------------------------------------------------------- |
+| `output`        | Object           | Yes      | Top-level object containing the results of the job execution.                                               |
+| `output.images` | Array of Objects | No       | Present if the workflow generated images. Contains a list of objects, each representing one output image.   |
+| `output.errors` | Array of Strings | No       | Present if non-fatal errors or warnings occurred during processing (e.g., S3 upload failure, missing data). |
 
-You can either create a new job async by using `/run` or a sync by using runsync. The example here is using a sync job and waits until the response is delivered.
+#### `output.images`
 
-The API expects a [JSON in this form](#json-request-body), where `workflow` is the [workflow from ComfyUI, exported as JSON](#how-to-get-the-workflow-from-comfyui) and `images` is optional. 
+Each object in the `output.images` array has the following structure:
 
-Please also take a look at the [test_input.json](./test_input.json) to see how the API input should look like.
+| Field Name | Type   | Description                                                                                     |
+| ---------- | ------ | ----------------------------------------------------------------------------------------------- |
+| `filename` | String | The original filename assigned by ComfyUI during generation.                                    |
+| `type`     | String | Indicates the format of the data. Either `"base64"` or `"s3_url"` (if S3 upload is configured). |
+| `data`     | String | Contains either the base64 encoded image string or the S3 URL for the uploaded image file.      |
 
-#### Example request with cURL
+> [!NOTE]
+> The `output.images` field provides a list of all generated images (excluding temporary ones).
+>
+> - If S3 upload is **not** configured (default), `type` will be `"base64"` and `data` will contain the base64 encoded image string.
+> - If S3 upload **is** configured, `type` will be `"s3_url"` and `data` will contain the S3 URL. See the [Configuration Guide](docs/configuration.md#example-s3-response) for an S3 example response.
+> - Clients interacting with the API need to handle this list-based structure under `output.images`.
+
+## Usage
+
+To interact with your deployed RunPod endpoint:
+
+1.  **Get API Key:** Generate a key in RunPod [User Settings](https://www.runpod.io/console/serverless/user/settings) (`API Keys` section).
+2.  **Get Endpoint ID:** Find your endpoint ID on the [Serverless Endpoints](https://www.runpod.io/console/serverless/user/endpoints) page or on the `Overview` page of your endpoint.
+
+### Generate Image (Sync Example)
+
+Send a workflow to the `/runsync` endpoint (waits for completion). Replace `<api_key>` and `<endpoint_id>`. The `-d` value should contain the [JSON input described above](#input).
 
 ```bash
-curl -X POST -H "Authorization: Bearer <api_key>" -H "Content-Type: application/json" -d '{"input":{"workflow":{"3":{"inputs":{"seed":1337,"steps":20,"cfg":8,"sampler_name":"euler","scheduler":"normal","denoise":1,"model":["4",0],"positive":["6",0],"negative":["7",0],"latent_image":["5",0]},"class_type":"KSampler"},"4":{"inputs":{"ckpt_name":"sd_xl_base_1.0.safetensors"},"class_type":"CheckpointLoaderSimple"},"5":{"inputs":{"width":512,"height":512,"batch_size":1},"class_type":"EmptyLatentImage"},"6":{"inputs":{"text":"beautiful scenery nature glass bottle landscape, purple galaxy bottle,","clip":["4",1]},"class_type":"CLIPTextEncode"},"7":{"inputs":{"text":"text, watermark","clip":["4",1]},"class_type":"CLIPTextEncode"},"8":{"inputs":{"samples":["3",0],"vae":["4",2]},"class_type":"VAEDecode"},"9":{"inputs":{"filename_prefix":"ComfyUI","images":["8",0]},"class_type":"SaveImage"}}}}' https://api.runpod.ai/v2/<endpoint_id>/runsync
-
-# Response with AWS S3 bucket configuration
-# {"delayTime":2188,"executionTime":2297,"id":"sync-c0cd1eb2-068f-4ecf-a99a-55770fc77391-e1","output":{"message":"https://bucket.s3.region.amazonaws.com/10-23/sync-c0cd1eb2-068f-4ecf-a99a-55770fc77391-e1/c67ad621.png","status":"success"},"status":"COMPLETED"}
-
-# Response as base64-encoded image
-# {"delayTime":2188,"executionTime":2297,"id":"sync-c0cd1eb2-068f-4ecf-a99a-55770fc77391-e1","output":{"message":"base64encodedimage","status":"success"},"status":"COMPLETED"}
+curl -X POST \
+  -H "Authorization: Bearer <api_key>" \
+  -H "Content-Type: application/json" \
+  -d '{"input":{"workflow":{... your workflow JSON ...}}}' \
+  https://api.runpod.ai/v2/<endpoint_id>/runsync
 ```
 
-## How to get the workflow from ComfyUI?
+You can also use the `/run` endpoint for asynchronous jobs and then poll the `/status` to see when the job is done. Or you [add a `webhook` into your request](https://docs.runpod.io/serverless/endpoints/send-requests#webhook-notifications) to be notified when the job is done.
 
-- Open ComfyUI in the browser
-- Open the `Settings` (gear icon in the top right of the menu)
-- In the dialog that appears configure:
-  - `Enable Dev mode Options`: enable
-  - Close the `Settings`
-- In the menu, click on the `Save (API Format)` button, which will download a file named `workflow_api.json`
+Refer to [`test_input.json`](./test_input.json) for a complete input example.
 
-You can now take the content of this file and put it into your `workflow` when interacting with the API.
+## Getting the Workflow JSON
 
-## Build the image
+To get the correct `workflow` JSON for the API:
 
-You can build the image locally: `docker build -t timpietruskyblibla/runpod-worker-comfy:dev --platform linux/amd64 .`
+1.  Open ComfyUI in your browser.
+2.  In the top navigation, select `Workflow > Export (API)`
+3.  A `workflow.json` file will be downloaded. Use the content of this file as the value for the `input.workflow` field in your API requests.
 
-🚨 It's important to specify the `--platform linux/amd64`, otherwise you will get an error on RunPod, see [#13](https://github.com/blib-la/runpod-worker-comfy/issues/13)
+## Further Documentation
 
-## Local testing
-
-Both tests will use the data from [test_input.json](./test_input.json), so make your changes in there to test this properly.
-
-### Setup
-
-- Make sure you have Python >= 3.10
-- Create a virtual environment: `python -m venv venv`
-- Activate the virtual environment: `.\venv\Scripts\activate` (Windows) or `source ./venv/bin/activate` (Mac / Linux)
-- Install the dependencies: `pip install -r requirements.txt`
-
-#### Setup for Windows
-
-**Note**: Our hope was that we can use this Docker Image with Docker Desktop on Windows. But regardless what we did, it was not possible. So we decided to use Ubuntu as part of WSL (Windows Subsystem for Linux) inside of Windows. This works without any problems, but only if you don't run Docker on Windows itself.
-
-To run the Docker image on Windows, we need to have WSL2 and a Linux distro (like Ubuntu) installed on Windows.
-
-- Follow the [guide on how to get WSL2 and Linux installed in Windows](https://ubuntu.com/tutorials/install-ubuntu-on-wsl2-on-windows-11-with-gui-support#1-overview) to install Ubuntu
-  - You can skip the "Install and use a GUI package" part as we don't need a GUI
-
-* When Ubuntu is installed, you have to login to Ubuntu in the terminal: `wsl -d Ubuntu`
-* Update the packages: `sudo apt update`
-* [Install Docker in Ubuntu](https://docs.docker.com/engine/install/ubuntu/) & then install docker-compose `sudo apt-get install docker-compose`
-* [Install the NVIDIA Toolkit in Ubuntu](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html#configuring-docker) and create the `nvidia` runtime
-
-- [Enable GPU acceleration on Ubuntu on WSL2 to use NVIDIA CUDA](https://ubuntu.com/tutorials/enabling-gpu-acceleration-on-ubuntu-on-wsl2-with-the-nvidia-cuda-platform#1-overview)
-
-  - For the step "Install the appropriate Windows vGPU driver for WSL": If you already have your GPU driver installed on Windows, you can skip this
-
-- Add your user to the `docker` group, so that you can use Docker without `sudo`: `sudo usermod -aG docker $USER`
-
-### Test: handler
-
-- Run all tests: `python -m unittest discover`
-- If you want to run a specific test: `python -m unittest tests.test_rp_handler.TestRunpodWorkerComfy.test_bucket_endpoint_not_configured`
-
-You can also start the handler itself to have the local server running: `python src/rp_handler.py`
-To get this to work you will also need to start "ComfyUI", otherwise the handler will not work.
-
-### Test: docker image
-
-- If you want to run the Docker container, you can use: `docker-compose up`
-
-## Automatically deploy to Docker hub with Github Actions
-
-The repo contains two workflows that publish the image to Docker hub using Github Actions:
-
-- [docker-dev.yml](.github/workflows/docker-dev.yml): Creates the image and pushes it to Docker hub with the `dev` tag on every push to the `main` branch
-- [docker-release.yml](.github/workflows/docker-release.yml): Creates the image and pushes it to Docker hub with the `latest` and the release tag. It will only be triggered when you create a release on GitHub
-
-If you want to use this, you should add these secrets to your repository:
-
-| Configuration Variable | Description                                                  | Example Value         |
-| ---------------------- | ------------------------------------------------------------ | --------------------- |
-| `DOCKERHUB_USERNAME`   | Your Docker Hub username.                                    | `your-username`       |
-| `DOCKERHUB_TOKEN`      | Your Docker Hub token for authentication.                    | `your-token`          |
-| `DOCKERHUB_REPO`       | The repository on Docker Hub where the image will be pushed. | `timpietruskyblibla`  |
-| `DOCKERHUB_IMG`        | The name of the image to be pushed to Docker Hub.            | `runpod-worker-comfy` |
-
-
-## Acknowledgments
-
-- Thanks to [all contributors](https://github.com/blib-la/runpod-worker-comfy/graphs/contributors) for your awesome work
-- Thanks to [Justin Merrell](https://github.com/justinmerrell) from RunPod for [worker-1111](https://github.com/runpod-workers/worker-a1111), which was used to get inspired on how to create this worker
-- Thanks to [Ashley Kleynhans](https://github.com/ashleykleynhans) for [runpod-worker-a1111](https://github.com/ashleykleynhans/runpod-worker-a1111), which was used to get inspired on how to create this worker
-- Thanks to [comfyanonymous](https://github.com/comfyanonymous) for creating [ComfyUI](https://github.com/comfyanonymous/ComfyUI), which provides such an awesome API to interact with Stable Diffusion
+- **[Deployment Guide](docs/deployment.md):** Detailed steps for deploying on RunPod.
+- **[Configuration Guide](docs/configuration.md):** Full list of environment variables (including S3 setup).
+- **[Customization Guide](docs/customization.md):** Adding custom models and nodes (Network Volumes, Docker builds).
+- **[Development Guide](docs/development.md):** Setting up a local environment for development & testing
+- **[CI/CD Guide](docs/ci-cd.md):** Information about the automated Docker build and publish workflows.
+- **[Acknowledgments](docs/acknowledgments.md):** Credits and thanks
