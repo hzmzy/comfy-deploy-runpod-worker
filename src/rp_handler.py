@@ -49,7 +49,9 @@ def validate_input(job_input):
     # Validate 'workflow' in input
     workflow = job_input.get("workflow_api")
     if workflow is None:
-        return None, "Missing 'workflow_api' parameter"
+        workflow = job_input.get("workflow_api_raw")
+    if workflow is None:
+        return None, "Missing 'workflow_api_raw' parameter"
 
     return job_input, None
 
