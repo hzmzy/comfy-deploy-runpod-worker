@@ -4,9 +4,25 @@
 TCMALLOC="$(ldconfig -p | grep -Po "libtcmalloc.so.\d" | head -n 1)"
 export LD_PRELOAD="${TCMALLOC}"
 
-echo "runpod-worker-comfy: Starting ComfyUI"
-python3 /comfyui/main.py  --disable-auto-launch --disable-metadata &
+# Ensure ComfyUI-Manager runs in offline network mode inside the container
+comfy-manager-set-mode offline || echo "worker-comfyui - Could not set ComfyUI-Manager network_mode" >&2
 
-# start local api server -rp_serve_api http://localhost:8000
-echo "runpod-worker-comfy: Starting RunPod Handler " 
-python3 -u /rp_handler.py
+echo "worker-comfyui: Starting ComfyUI"
+
+# Allow operators to tweak verbosity; default is DEBUG.
+: "${COMFY_LOG_LEVEL:=DEBUG}"
+
+SERVE_API_LOCALLY="${SERVE_API_LOCALLY:-false}"
+
+# Serve the API and don't shutdown the container
+if [ "$SERVE_API_LOCALLY" == "true" ]; then
+    python -u /comfyui/main.py --disable-auto-launch --disable-metadata --cpu --listen --verbose "${COMFY_LOG_LEVEL}" --log-stdout &
+
+    echo "worker-comfyui: Starting RunPod Handler"
+    python -u /handler.py --rp_serve_api --rp_api_host=0.0.0.0
+else
+    python -u /comfyui/main.py --disable-auto-launch --disable-metadata --verbose "${COMFY_LOG_LEVEL}" --log-stdout &
+
+    echo "worker-comfyui: Starting RunPod Handler"
+    python -u /handler.py
+fi
