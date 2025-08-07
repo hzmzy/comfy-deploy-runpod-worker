@@ -121,3 +121,6 @@ WORKDIR /comfyui/custom_nodes
 # 安装 ComfyUI-VideoHelperSuite
 RUN git clone https://github.com/Kosinkadink/ComfyUI-VideoHelperSuite.git
 RUN cd ComfyUI-VideoHelperSuite && pip3 install -r requirements.txt
+# 安装 ComfyUI-ComfyUI_essentials
+RUN git clone https://github.com/cubiq/ComfyUI_essentials.git
+RUN cd ComfyUI_essentials && pip3 install -r requirements.txt
