@@ -735,72 +735,70 @@ def handler(job):
                         errors.append(error_msg)
 
             # 新增：处理视频输出
-            if "video" in node_output:
-                video_filename = node_output["video"]
-                print(f"worker-comfyui - Node {node_id} contains video output: {video_filename}")
-         
-                # 读取视频文件的二进制
-                video_bytes = get_image_data(video_filename, subfolder="", img_type="video")  # 你可能需要根据实际情况调整参数
-         
-                if video_bytes:
-                    file_extension = os.path.splitext(video_filename)[1] or ".mp4"
-         
-                    if os.environ.get("BUCKET_ENDPOINT_URL"):
-                        try:
-                            with tempfile.NamedTemporaryFile(
-                                suffix=file_extension, delete=False
-                            ) as temp_file:
-                                temp_file.write(video_bytes)
-                                temp_file_path = temp_file.name
-                            print(
-                                f"worker-comfyui - Wrote video bytes to temporary file: {temp_file_path}"
-                            )
-         
-                            print(f"worker-comfyui - Uploading {video_filename} to S3...")
-                            s3_url = rp_upload.upload_image(job_id, temp_file_path)
-                            os.remove(temp_file_path)  # Clean up temp file
-                            print(
-                                f"worker-comfyui - Uploaded {video_filename} to S3: {s3_url}"
-                            )
-                            output_data.append(
-                                {
-                                    "filename": video_filename,
-                                    "type": "s3_url",
-                                    "data": s3_url,
-                                }
-                            )
-                        except Exception as e:
-                            error_msg = f"Error uploading {video_filename} to S3: {e}"
-                            print(f"worker-comfyui - {error_msg}")
-                            errors.append(error_msg)
-                            if "temp_file_path" in locals() and os.path.exists(
-                                temp_file_path
-                            ):
-                                try:
-                                    os.remove(temp_file_path)
-                                except OSError as rm_err:
-                                    print(
-                                        f"worker-comfyui - Error removing temp file {temp_file_path}: {rm_err}"
-                                    )
+            if "gifs" in node_output and isinstance(node_output["gifs"], list):
+                for gif_info in node_output["gifs"]:
+                    video_filename = gif_info.get("filename")
+                    subfolder = gif_info.get("subfolder", "")
+                    img_type = gif_info.get("type", "video")  # 默认为 video
+            
+                    if not video_filename:
+                        continue
+                    
+                    print(f"worker-comfyui - Node {node_id} contains video output: {video_filename}")
+            
+                    # 读取视频文件的二进制
+                    video_bytes = get_image_data(video_filename, subfolder=subfolder, img_type=img_type)
+            
+                    if video_bytes:
+                        file_extension = os.path.splitext(video_filename)[1] or ".mp4"
+            
+                        if os.environ.get("BUCKET_ENDPOINT_URL"):
+                            try:
+                                with tempfile.NamedTemporaryFile(suffix=file_extension, delete=False) as temp_file:
+                                    temp_file.write(video_bytes)
+                                    temp_file_path = temp_file.name
+                                print(f"worker-comfyui - Wrote video bytes to temporary file: {temp_file_path}")
+            
+                                print(f"worker-comfyui - Uploading {video_filename} to S3...")
+                                s3_url = rp_upload.upload_image(job_id, temp_file_path)
+                                os.remove(temp_file_path)  # Clean up temp file
+                                print(f"worker-comfyui - Uploaded {video_filename} to S3: {s3_url}")
+                                output_data.append(
+                                    {
+                                        "filename": video_filename,
+                                        "type": "s3_url",
+                                        "data": s3_url,
+                                    }
+                                )
+                            except Exception as e:
+                                error_msg = f"Error uploading {video_filename} to S3: {e}"
+                                print(f"worker-comfyui - {error_msg}")
+                                errors.append(error_msg)
+                                if "temp_file_path" in locals() and os.path.exists(temp_file_path):
+                                    try:
+                                        os.remove(temp_file_path)
+                                    except OSError as rm_err:
+                                        print(f"worker-comfyui - Error removing temp file {temp_file_path}: {rm_err}")
+                        else:
+                            try:
+                                base64_video = base64.b64encode(video_bytes).decode("utf-8")
+                                output_data.append(
+                                    {
+                                        "filename": video_filename,
+                                        "type": "base64",
+                                        "data": base64_video,
+                                    }
+                                )
+                                print(f"worker-comfyui - Encoded {video_filename} as base64")
+                            except Exception as e:
+                                error_msg = f"Error encoding {video_filename} to base64: {e}"
+                                print(f"worker-comfyui - {error_msg}")
+                                errors.append(error_msg)
                     else:
-                        try:
-                            base64_video = base64.b64encode(video_bytes).decode("utf-8")
-                            output_data.append(
-                                {
-                                    "filename": video_filename,
-                                    "type": "base64",
-                                    "data": base64_video,
-                                }
-                            )
-                            print(f"worker-comfyui - Encoded {video_filename} as base64")
-                        except Exception as e:
-                            error_msg = f"Error encoding {video_filename} to base64: {e}"
-                            print(f"worker-comfyui - {error_msg}")
-                            errors.append(error_msg)
-                else:
-                    error_msg = f"Failed to fetch video data for {video_filename} from /view endpoint."
-                    errors.append(error_msg)
-         
+                        error_msg = f"Failed to fetch video data for {video_filename} from /view endpoint."
+                        print(f"worker-comfyui - {error_msg}")
+                        errors.append(error_msg)
+                     
             # Check for other output types
             other_keys = [k for k in node_output.keys() if k != "images"]
             if other_keys:
