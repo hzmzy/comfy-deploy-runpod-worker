@@ -621,7 +621,7 @@ def handler(job):
         # Fetch history even if there were execution errors, some outputs might exist
         print(f"worker-comfyui - Fetching history for prompt {prompt_id}...")
         history = get_history(prompt_id)
-        print(f"worker-comfyui - History response: {history}")
+        
 
         if prompt_id not in history:
             error_msg = f"Prompt ID {prompt_id} not found in history after execution."
