@@ -49,6 +49,8 @@ RUN uv pip install comfy-cli pip setuptools wheel
 # Install ComfyUI
 RUN /usr/bin/yes | comfy --workspace /comfyui install --version "${COMFYUI_VERSION}" --nvidia; 
 
+# ✅ 强制安装 PyTorch GPU 版本（CUDA 12.4 wheel）
+RUN pip install --upgrade torch --index-url https://download.pytorch.org/whl/cu124
 
 # Change working directory to ComfyUI
 WORKDIR /comfyui
@@ -124,3 +126,5 @@ RUN cd ComfyUI-VideoHelperSuite && pip3 install -r requirements.txt
 # 安装 ComfyUI-ComfyUI_essentials
 RUN git clone https://github.com/cubiq/ComfyUI_essentials.git
 RUN cd ComfyUI_essentials && pip3 install -r requirements.txt
+
+RUN python -c "import torch; print(torch.version.cuda, torch.cuda.is_available())"
