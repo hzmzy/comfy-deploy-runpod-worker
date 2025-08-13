@@ -51,10 +51,6 @@ WORKDIR /
 # Install Python runtime dependencies for the handler
 RUN  pip3 install runpod requests websocket-client
 
-# Add application code and scripts
-ADD src/start.sh handler.py test_input.json ./
-RUN chmod +x /start.sh
-
 
 # Stage 2: Download models
 FROM base AS downloader
@@ -91,6 +87,14 @@ RUN cd ComfyUI-VideoHelperSuite && pip3 install -r requirements.txt
 RUN git clone https://github.com/cubiq/ComfyUI_essentials.git
 RUN cd ComfyUI_essentials && pip3 install -r requirements.txt
 
+ Go back to the root
+WORKDIR /
+
+
+# Add application code and scripts
+ADD src/start.sh handler.py test_input.json ./
+RUN chmod +x /start.sh
+
 VOLUME /comfyui/models
 VOLUME /comfyui/input
 VOLUME /comfyui/output
@@ -99,3 +103,4 @@ EXPOSE 8188
 
 # Set the default command to run when starting the container
 CMD ["/start.sh"]
+
