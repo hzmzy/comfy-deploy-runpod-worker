@@ -49,7 +49,7 @@ ADD src/extra_model_paths.yaml ./
 WORKDIR /
 
 # Install Python runtime dependencies for the handler
-RUN uv pip install runpod requests websocket-client
+RUN  pip3 install runpod requests websocket-client
 
 # Add application code and scripts
 ADD src/start.sh handler.py test_input.json ./
