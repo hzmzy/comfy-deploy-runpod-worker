@@ -100,4 +100,4 @@ RUN cd ComfyUI-VideoHelperSuite && pip3 install -r requirements.txt
 RUN git clone https://github.com/cubiq/ComfyUI_essentials.git
 RUN cd ComfyUI_essentials && pip3 install -r requirements.txt
 
-RUN python -c "import torch; print(torch.version.cuda, torch.cuda.is_available())"
+
