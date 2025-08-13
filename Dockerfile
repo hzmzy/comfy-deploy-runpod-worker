@@ -26,7 +26,7 @@ RUN apt-get autoremove -y && apt-get clean -y && rm -rf /var/lib/apt/lists/*
 # Clone ComfyUI repository
 RUN git clone https://github.com/comfyanonymous/ComfyUI.git /comfyui
 # Force comfyui on a specific version
-RUN cd /comfyui && git reset --hard b12b48e170ccff156dc6ec11242bb6af7d8437fd
+RUN cd /comfyui && git reset --hard 560d38f34c5bd532f89f2178f01ee819cf145820
 
 # Change working directory to ComfyUI
 WORKDIR /comfyui
@@ -64,6 +64,9 @@ EXPOSE 8188
 
 # Set the default command to run when starting the container
 CMD ["/start.sh"]
+
+# Stage 2: Download models
+FROM base AS downloader
 
 # Change working directory to ComfyUI
 WORKDIR /comfyui
