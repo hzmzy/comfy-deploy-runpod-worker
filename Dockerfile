@@ -42,9 +42,6 @@ RUN pip3 install -r requirements.txt
 # Install runpod
 RUN pip3 install runpod requests websocket-client
 
-# Change working directory to ComfyUI
-WORKDIR /comfyui
-
 # Support for the network volume
 ADD src/extra_model_paths.yaml ./
 
