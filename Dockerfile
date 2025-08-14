@@ -29,11 +29,14 @@ RUN apt-get update && apt-get install -y \
     ffmpeg \
     build-essential \
     ninja-build \
-    gcc \
-    g++ \
+    gcc-11  \
+    g++-11 \
     && ln -sf /usr/bin/python3.10 /usr/bin/python \
     && ln -sf /usr/bin/pip3 /usr/bin/pip \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
+# 设置默认 GCC 版本
+ENV CC=/usr/bin/gcc-11
+ENV CXX=/usr/bin/g++-11
 
 # Clean up to reduce image size
 RUN apt-get autoremove -y && apt-get clean -y && rm -rf /var/lib/apt/lists/*
