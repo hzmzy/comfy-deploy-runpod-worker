@@ -1,5 +1,5 @@
-# Use Nvidia CUDA base image
-FROM nvidia/cuda:12.1.0-cudnn8-runtime-ubuntu22.04 as base
+# Use Nvidia CUDA base image (12.4 + cuDNN 8 + Ubuntu 22.04)
+FROM nvidia/cuda:12.4.0-cudnn8-runtime-ubuntu22.04 as base
 
 # Prevents prompts from packages asking for user input during installation
 ENV DEBIAN_FRONTEND=noninteractive
@@ -17,7 +17,7 @@ RUN apt-get update && apt-get install -y \
 
 RUN pip install --upgrade pip
 
-# Impact pack deps
+# Install dependencies for impact pack
 RUN apt-get install -y libgl1-mesa-glx libglib2.0-0
 
 # Clean up to reduce image size
@@ -25,15 +25,18 @@ RUN apt-get autoremove -y && apt-get clean -y && rm -rf /var/lib/apt/lists/*
 
 # Clone ComfyUI repository
 RUN git clone https://github.com/comfyanonymous/ComfyUI.git /comfyui
-# Force comfyui on a specific version
+# Force ComfyUI on a specific version
 RUN cd /comfyui && git reset --hard 560d38f34c5bd532f89f2178f01ee819cf145820
 
 # Change working directory to ComfyUI
 WORKDIR /comfyui
 
+# Install PyTorch (CUDA 12.4 build)
+RUN pip3 install --no-cache-dir torch==2.3.0 torchvision==0.18.0 torchaudio==2.3.0 --index-url https://download.pytorch.org/whl/cu124
+# Install xformers for CUDA 12.4
+RUN pip3 install --no-cache-dir xformers==0.0.26.post1 --index-url https://download.pytorch.org/whl/cu124
+
 # Install ComfyUI dependencies
-RUN pip3 install --no-cache-dir torch==2.1.1 torchvision==0.16.1 torchaudio==2.1.1 --index-url https://download.pytorch.org/whl/cu121
-RUN pip3 install --no-cache-dir xformers==0.0.23 --index-url https://download.pytorch.org/whl/cu121
 RUN pip3 install -r requirements.txt
 
 # Install runpod
@@ -47,10 +50,6 @@ ADD src/extra_model_paths.yaml ./
 
 # Go back to the root
 WORKDIR /
-
-# Install Python runtime dependencies for the handler
-RUN  pip3 install runpod requests websocket-client
-
 
 # Stage 2: Download models
 FROM base AS downloader
