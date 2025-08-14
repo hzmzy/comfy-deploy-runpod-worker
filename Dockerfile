@@ -155,6 +155,7 @@ RUN cd ComfyUI_LayerStyle && pip3 install -r requirements.txt
 
  # Go back to the root
 WORKDIR /
+RUN pip3 install sageattention
 
 VOLUME /comfyui/models
 VOLUME /comfyui/input
