@@ -83,7 +83,7 @@ RUN cd ComfyUI-VideoHelperSuite && pip3 install -r requirements.txt
 RUN git clone https://github.com/cubiq/ComfyUI_essentials.git
 RUN cd ComfyUI_essentials && pip3 install -r requirements.txt
 
- Go back to the root
+ # Go back to the root
 WORKDIR /
 
 
