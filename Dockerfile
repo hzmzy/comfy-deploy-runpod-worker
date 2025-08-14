@@ -32,9 +32,11 @@ RUN cd /comfyui && git reset --hard 560d38f34c5bd532f89f2178f01ee819cf145820
 WORKDIR /comfyui
 
 # Install PyTorch (CUDA 12.4 build)
-RUN pip3 install --no-cache-dir torch==2.3.0 torchvision==0.18.0 torchaudio==2.3.0 --index-url https://download.pytorch.org/whl/cu124
-# Install xformers for CUDA 12.4
-RUN pip3 install --no-cache-dir xformers==0.0.26.post1 --index-url https://download.pytorch.org/whl/cu124
+RUN pip3 install --no-cache-dir torch==2.5.1+cu124 torchvision==0.20.1+cu124 torchaudio==2.5.1+cu124 --index-url https://download.pytorch.org/whl/cu124
+
+# Install xformers compatible with PyTorch 2.5.1 + cu124
+RUN pip3 install --no-cache-dir xformers==0.0.27.post2 --index-url https://download.pytorch.org/whl/cu124
+
 
 # Install ComfyUI dependencies
 RUN pip3 install -r requirements.txt
