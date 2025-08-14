@@ -115,11 +115,6 @@ RUN cd ComfyUI_essentials && pip3 install -r requirements.txt
  # Go back to the root
 WORKDIR /
 
-
-# Add application code and scripts
-ADD src/start.sh handler.py test_input.json ./
-RUN chmod +x /start.sh
-
 VOLUME /comfyui/models
 VOLUME /comfyui/input
 VOLUME /comfyui/output
