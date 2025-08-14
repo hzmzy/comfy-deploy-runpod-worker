@@ -1,5 +1,5 @@
-# Use Nvidia CUDA base image (12.4 + cuDNN 8 + Ubuntu 22.04)
-FROM nvidia/cuda:12.4.0-cudnn8-runtime-ubuntu22.04 as base
+# Use Nvidia CUDA base image (12.4.1 + cuDNN + Ubuntu 22.04)
+FROM nvidia/cuda:12.4.1-cudnn-devel-ubuntu22.04 as base
 
 # Prevents prompts from packages asking for user input during installation
 ENV DEBIAN_FRONTEND=noninteractive
