@@ -1,91 +1,62 @@
-# Build argument for base image selection
+# -------- Stage 1: Base Builder --------
 ARG BASE_IMAGE=nvcr.io/nvidia/cuda:12.6.3-cudnn-runtime-ubuntu24.04
+FROM ${BASE_IMAGE} AS base-builder
 
-# Stage 1: Base image with common dependencies
-FROM ${BASE_IMAGE} AS base
+ENV COMFYUI_VERSION=0.3.49 \
+    DEBIAN_FRONTEND=noninteractive \
+    PIP_PREFER_BINARY=1 \
+    PYTHONUNBUFFERED=1 \
+    CMAKE_BUILD_PARALLEL_LEVEL=8 \
+    PATH="/opt/venv/bin:${PATH}"
 
-# Build arguments for this stage (defaults provided by docker-bake.hcl)
-ENV COMFYUI_VERSION=0.3.49
+# 安装运行和构建所需依赖
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    python3 python3-pip python3-dev \
+    git wget curl ca-certificates \
+    libgl1 libglib2.0-0 libsm6 libxext6 libxrender1 ffmpeg \
+    build-essential ninja-build gcc-11 g++-11 \
+ && ln -sf /usr/bin/python3 /usr/bin/python \
+ && ln -sf /usr/bin/pip3 /usr/bin/pip \
+ && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Prevents prompts from packages asking for user input during installation
-ENV DEBIAN_FRONTEND=noninteractive
-# Prefer binary wheels over source distributions for faster pip installations
-ENV PIP_PREFER_BINARY=1
-# Ensures output from python is printed immediately to the terminal without buffering
-ENV PYTHONUNBUFFERED=1
-# Speed up some cmake builds
-ENV CMAKE_BUILD_PARALLEL_LEVEL=8
+# 设置 GCC
+ENV CC=/usr/bin/gcc-11 \
+    CXX=/usr/bin/g++-11
 
-# Install Python, git and other necessary tools
-RUN apt-get update && apt-get install -y \
-    python3.10 \
-    git \
-    wget \
-    libgl1 \
-    libglib2.0-0 \
-    libsm6 \
-    libxext6 \
-    libxrender1 \
-    ffmpeg \
-    build-essential \
-    ninja-build \
-    gcc-11  \
-    g++-11 \
-    && ln -sf /usr/bin/python3.10 /usr/bin/python \
-    && ln -sf /usr/bin/pip3 /usr/bin/pip \
-    && apt-get clean && rm -rf /var/lib/apt/lists/*
-# 设置默认 GCC 版本
-ENV CC=/usr/bin/gcc-11
-ENV CXX=/usr/bin/g++-11
-
-# Clean up to reduce image size
-RUN apt-get autoremove -y && apt-get clean -y && rm -rf /var/lib/apt/lists/*
-
-# Install uv (latest) using official installer and create isolated venv
+# 安装 uv 并创建 venv
 RUN wget -qO- https://astral.sh/uv/install.sh | sh \
     && ln -s /root/.local/bin/uv /usr/local/bin/uv \
-    && ln -s /root/.local/bin/uvx /usr/local/bin/uvx \
-    && uv venv /opt/venv
+    && uv venv /opt/venv --python /usr/bin/python3
 
-# Use the virtual environment for all subsequent commands
-ENV PATH="/opt/venv/bin:${PATH}"
-
-# Install comfy-cli + dependencies needed by it to install ComfyUI
+# 安装 comfy-cli
 RUN uv pip install comfy-cli pip setuptools wheel
 
-# Install ComfyUI
-RUN /usr/bin/yes | comfy --workspace /comfyui install --version "${COMFYUI_VERSION}" --nvidia; 
+# 安装 ComfyUI
+RUN /usr/bin/yes | comfy --workspace /comfyui install --version "${COMFYUI_VERSION}" --nvidia
 
-
-# Change working directory to ComfyUI
+# 复制配置文件
 WORKDIR /comfyui
-
-# Support for the network volume
 ADD src/extra_model_paths.yaml ./
-
-# Go back to the root
 WORKDIR /
 
-# Install Python runtime dependencies for the handler
+# 安装运行依赖
 RUN uv pip install runpod requests websocket-client
 
-# Add application code and scripts
+# 添加启动脚本
 ADD src/start.sh handler.py test_input.json ./
 RUN chmod +x /start.sh
 
-# Add script to install custom nodes
+# 自定义节点安装脚本
 COPY scripts/comfy-node-install.sh /usr/local/bin/comfy-node-install
 RUN chmod +x /usr/local/bin/comfy-node-install
-
-# Prevent pip from asking for confirmation during uninstall steps in custom nodes
 ENV PIP_NO_INPUT=1
 
-# Copy helper script to switch Manager network mode at container start
+# 网络模式切换脚本
 COPY scripts/comfy-manager-set-mode.sh /usr/local/bin/comfy-manager-set-mode
 RUN chmod +x /usr/local/bin/comfy-manager-set-mode
 
 # Stage 2: Download models
-FROM base AS downloader
+FROM base-builder AS downloader
 
 # Change working directory to ComfyUI
 WORKDIR /comfyui
@@ -138,13 +109,33 @@ RUN  wget -O models/text_encoders/umt5-xxl-enc-bf16.safetensors https://huggingf
 
 
 # Stage 3: Final image
-FROM base AS final
+FROM ${BASE_IMAGE} AS final
 
-# Copy models from stage 2 to the final image
+ENV DEBIAN_FRONTEND=noninteractive \
+    PIP_PREFER_BINARY=1 \
+    PYTHONUNBUFFERED=1 \
+    PATH="/opt/venv/bin:${PATH}"
+
+# 安装最小运行依赖（不含编译工具）
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    python3 python3-pip \
+    git wget ca-certificates \
+    libgl1 libglib2.0-0 libsm6 libxext6 libxrender1 ffmpeg \
+ && ln -sf /usr/bin/python3 /usr/bin/python \
+ && ln -sf /usr/bin/pip3 /usr/bin/pip \
+ && apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# 从 builder 拷贝 venv 和 ComfyUI
+COPY --from=base-builder /opt/venv /opt/venv
+COPY --from=base-builder /comfyui /comfyui
+COPY --from=base-builder /start.sh /start.sh
+COPY --from=base-builder /usr/local/bin/comfy-node-install /usr/local/bin/comfy-node-install
+COPY --from=base-builder /usr/local/bin/comfy-manager-set-mode /usr/local/bin/comfy-manager-set-mode
+
+# 从 downloader 拷贝模型
 COPY --from=downloader /comfyui/models /comfyui/models
 
 WORKDIR /comfyui/custom_nodes
-
 
 # 安装 ComfyUI-ComfyUI_essentials
 RUN git clone https://github.com/cubiq/ComfyUI_essentials.git
