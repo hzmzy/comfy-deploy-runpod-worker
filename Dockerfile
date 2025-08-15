@@ -1,64 +1,40 @@
-# Build argument for base image selection
-ARG BASE_IMAGE=nvcr.io/nvidia/cuda:12.6.3-cudnn-runtime-ubuntu24.04
-
-# Stage 1: Base image with common dependencies
-FROM ${BASE_IMAGE} AS base
-
-# Build arguments for this stage (defaults provided by docker-bake.hcl)
-ENV COMFYUI_VERSION=0.3.49
+# Use Nvidia CUDA base image
+FROM nvidia/cuda:12.1.0-cudnn8-runtime-ubuntu22.04 as base
 
 # Prevents prompts from packages asking for user input during installation
 ENV DEBIAN_FRONTEND=noninteractive
 # Prefer binary wheels over source distributions for faster pip installations
 ENV PIP_PREFER_BINARY=1
 # Ensures output from python is printed immediately to the terminal without buffering
-ENV PYTHONUNBUFFERED=1
-# Speed up some cmake builds
-ENV CMAKE_BUILD_PARALLEL_LEVEL=8
-# 禁用 FP8，防止 "fp8e4nv not supported" 报错
-ENV TORCHINDUCTOR_DISABLE_FP8=1
+ENV PYTHONUNBUFFERED=1 
 
 # Install Python, git and other necessary tools
 RUN apt-get update && apt-get install -y \
-    python3 \
+    python3.10 \
     python3-pip \
-    python3-dev \
     git \
-    wget \
-    libgl1 \
-    libglib2.0-0 \
-    libsm6 \
-    libxext6 \
-    libxrender1 \
-    ffmpeg \
-    build-essential \
-    ninja-build \
-    gcc-11  \
-    g++-11 \
-    && ln -sf /usr/bin/python3.10 /usr/bin/python \
-    && ln -sf /usr/bin/pip3 /usr/bin/pip \
-    && apt-get clean && rm -rf /var/lib/apt/lists/*
-# 设置默认 GCC 版本
-ENV CC=/usr/bin/gcc-11
-ENV CXX=/usr/bin/g++-11
+    wget
+
+RUN pip install --upgrade pip
+
+# Impact pack deps
+RUN apt-get install -y libgl1-mesa-glx libglib2.0-0
 
 # Clean up to reduce image size
 RUN apt-get autoremove -y && apt-get clean -y && rm -rf /var/lib/apt/lists/*
 
-# Install uv (latest) using official installer and create isolated venv
-RUN wget -qO- https://astral.sh/uv/install.sh | sh \
-    && ln -s /root/.local/bin/uv /usr/local/bin/uv \
-    && ln -s /root/.local/bin/uvx /usr/local/bin/uvx \
-    && uv venv /opt/venv
+# Clone ComfyUI repository
+RUN git clone https://github.com/comfyanonymous/ComfyUI.git /comfyui
+# Force comfyui on a specific version
+RUN cd /comfyui && git reset --hard b12b48e170ccff156dc6ec11242bb6af7d8437fd
 
-# Use the virtual environment for all subsequent commands
-ENV PATH="/opt/venv/bin:${PATH}"
+# Change working directory to ComfyUI
+WORKDIR /comfyui
 
-# Install comfy-cli + dependencies needed by it to install ComfyUI
-RUN uv pip install comfy-cli pip setuptools wheel
-
-# Install ComfyUI
-RUN /usr/bin/yes | comfy --workspace /comfyui install --version "${COMFYUI_VERSION}" --nvidia; 
+# Install ComfyUI dependencies
+RUN pip3 install --no-cache-dir torch==2.1.1 torchvision==0.16.1 torchaudio==2.1.1 --index-url https://download.pytorch.org/whl/cu121
+RUN pip3 install --no-cache-dir xformers==0.0.23 --index-url https://download.pytorch.org/whl/cu121
+RUN pip3 install -r requirements.txt
 
 # Change working directory to ComfyUI
 WORKDIR /comfyui
@@ -70,25 +46,12 @@ ADD src/extra_model_paths.yaml ./
 WORKDIR /
 
 # Install Python runtime dependencies for the handler
-RUN uv pip install runpod requests websocket-client
+RUN  pip3 install runpod requests websocket-client
 
 # Add application code and scripts
 ADD src/start.sh handler.py test_input.json ./
 RUN chmod +x /start.sh
 
-# Add script to install custom nodes
-COPY scripts/comfy-node-install.sh /usr/local/bin/comfy-node-install
-RUN chmod +x /usr/local/bin/comfy-node-install
-
-# Prevent pip from asking for confirmation during uninstall steps in custom nodes
-ENV PIP_NO_INPUT=1
-
-# Copy helper script to switch Manager network mode at container start
-COPY scripts/comfy-manager-set-mode.sh /usr/local/bin/comfy-manager-set-mode
-RUN chmod +x /usr/local/bin/comfy-manager-set-mode
-
-# Stage 2: Download models
-FROM base AS downloader
 
 # Change working directory to ComfyUI
 WORKDIR /comfyui
@@ -134,12 +97,6 @@ RUN  wget -O models/text_encoders/umt5-xxl-enc-bf16.safetensors https://huggingf
 #text_encoders
 # RUN  wget -O models/text_encoders/umt5_xxl_fp8_e4m3fn_scaled.safetensors https://huggingface.co/Comfy-Org/Wan_2.1_ComfyUI_repackaged/resolve/main/split_files/text_encoders/umt5_xxl_fp8_e4m3fn_scaled.safetensors
 
-# Stage 3: Final image
-FROM base AS final
-
-# Copy models from stage 2 to the final image
-COPY --from=downloader /comfyui/models /comfyui/models
-
 WORKDIR /comfyui/custom_nodes
 
 # 安装 ComfyUI-ComfyUI_essentials
@@ -157,7 +114,6 @@ RUN cd ComfyUI_LayerStyle && pip3 install -r requirements.txt
 
  # Go back to the root
 WORKDIR /
-RUN pip3 install sageattention
 
 VOLUME /comfyui/models
 VOLUME /comfyui/input
