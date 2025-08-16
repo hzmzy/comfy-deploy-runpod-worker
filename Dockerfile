@@ -49,11 +49,6 @@ WORKDIR /
 # Install Python runtime dependencies for the handler
 RUN  pip3 install runpod requests websocket-client
 
-# Add application code and scripts
-ADD src/start.sh handler.py test_input.json ./
-RUN chmod +x /start.sh
-
-
 # Change working directory to ComfyUI
 WORKDIR /comfyui
 
@@ -121,6 +116,9 @@ VOLUME /comfyui/input
 VOLUME /comfyui/output
 
 EXPOSE 8188
+# Add the start and the handler
+ADD src/start.sh src/rp_handler.py test_input.json  ./
 
+RUN chmod +x /start.sh
 # Set the default command to run when starting the container
 CMD ["/start.sh"]
