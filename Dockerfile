@@ -112,7 +112,7 @@ RUN cd ComfyUI_LayerStyle && pip3 install -r requirements.txt
 WORKDIR /
 
 # Add the start and the handler
-ADD src/start.sh src/rp_handler.py test_input.json  ./
+ADD src/start.sh handler.py test_input.json  ./
 
 RUN chmod +x /start.sh
 # Set the default command to run when starting the container
