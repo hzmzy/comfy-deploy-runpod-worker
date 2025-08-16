@@ -18,7 +18,10 @@ ENV PYTHONUNBUFFERED=1
 ENV CMAKE_BUILD_PARALLEL_LEVEL=8
 
 # Impact pack deps
-RUN apt-get install -y libgl1-mesa-glx libglib2.0-0
+RUN apt-get update && apt-get install -y \
+    python3.12 \
+    python3.12-venv \
+    git \
     wget \
     libgl1 \
     libglib2.0-0 \
@@ -28,6 +31,9 @@ RUN apt-get install -y libgl1-mesa-glx libglib2.0-0
     ffmpeg \
     && ln -sf /usr/bin/python3.12 /usr/bin/python \
     && ln -sf /usr/bin/pip3 /usr/bin/pip
+
+# Clean up to reduce image size
+RUN apt-get autoremove -y && apt-get clean -y && rm -rf /var/lib/apt/lists/*
 
 # Install uv (latest) using official installer and create isolated venv
 RUN wget -qO- https://astral.sh/uv/install.sh | sh \
@@ -44,6 +50,11 @@ RUN uv pip install comfy-cli pip setuptools wheel
 # Install ComfyUI
 RUN /usr/bin/yes | comfy --workspace /comfyui install --version "${COMFYUI_VERSION}" --nvidia; 
 
+# Change working directory to ComfyUI
+WORKDIR /comfyui
+
+# Support for the network volume
+ADD src/extra_model_paths.yaml ./
 
 # Go back to the root
 WORKDIR /
