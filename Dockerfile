@@ -111,14 +111,16 @@ RUN cd ComfyUI_LayerStyle && pip3 install -r requirements.txt
  # Go back to the root
 WORKDIR /
 
-VOLUME /comfyui/models
-VOLUME /comfyui/input
-VOLUME /comfyui/output
-
-EXPOSE 8188
 # Add the start and the handler
 ADD src/start.sh src/rp_handler.py test_input.json  ./
 
 RUN chmod +x /start.sh
 # Set the default command to run when starting the container
+
+VOLUME /comfyui/models
+VOLUME /comfyui/input
+VOLUME /comfyui/output
+
+EXPOSE 8188
+
 CMD ["/start.sh"]
