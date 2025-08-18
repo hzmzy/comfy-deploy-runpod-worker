@@ -62,7 +62,6 @@ WORKDIR /
 # Install Python runtime dependencies for the handler
 RUN uv pip install runpod requests websocket-client
 
-RUN uv pip install sageattention
 
 # Add script to install custom nodes
 COPY scripts/comfy-node-install.sh /usr/local/bin/comfy-node-install
@@ -152,6 +151,9 @@ RUN cd ComfyUI_LayerStyle && pip3 install -r requirements.txt
 
  # Go back to the root
 WORKDIR /
+
+RUN uv pip install sageattention
+
 
 # Add the start and the handler
 ADD src/start.sh handler.py test_input.json  ./
