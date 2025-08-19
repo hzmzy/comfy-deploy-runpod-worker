@@ -19,6 +19,7 @@ ENV CMAKE_BUILD_PARALLEL_LEVEL=8
 
 # Impact pack deps
 RUN apt-get update && apt-get install -y \
+    build-essential \
     python3.12 \
     python3.12-venv \
     git \
@@ -43,7 +44,7 @@ RUN wget -qO- https://astral.sh/uv/install.sh | sh \
 
 # Use the virtual environment for all subsequent commands
 ENV PATH="/opt/venv/bin:${PATH}"
-
+ENV CC=/usr/bin/gcc
 # Install comfy-cli + dependencies needed by it to install ComfyUI
 RUN uv pip install comfy-cli pip setuptools wheel
 
