@@ -74,7 +74,6 @@ ENV PIP_NO_INPUT=1
 COPY scripts/comfy-manager-set-mode.sh /usr/local/bin/comfy-manager-set-mode
 RUN chmod +x /usr/local/bin/comfy-manager-set-mode
 
-
 # Stage 2: Download models
 FROM base AS downloader
 
@@ -98,7 +97,7 @@ WORKDIR /comfyui
 # Create necessary directories upfront wan2.2 ti2v 5b kj
 RUN mkdir -p models/checkpoints models/vae models/diffusion_models models/text_encoders
 # upscale_models
-#RUN  wget -O models/upscale_models/4x-UltraSharp.pth https://huggingface.co/woods55/mine/resolve/main/4xLSDIR.pth?download=true
+RUN  wget -O models/upscale_models/4x-UltraSharp.pth https://huggingface.co/woods55/mine/resolve/main/4xLSDIR.pth?download=true
 #vae
 RUN  wget -O models/vae/wan2.2_vae.safetensors https://huggingface.co/Comfy-Org/Wan_2.2_ComfyUI_Repackaged/resolve/main/split_files/vae/wan2.2_vae.safetensors
 #diffusion_models
