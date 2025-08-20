@@ -1,9 +1,11 @@
-# Use Nvidia CUDA 12.4 base image
-FROM nvidia/cuda:12.4.1-cudnn-runtime-ubuntu22.04 as base
+# Use Nvidia CUDA base image
+FROM nvidia/cuda:12.1.0-cudnn8-runtime-ubuntu22.04 as base
 
-# Prevents prompts during installation
+# Prevents prompts from packages asking for user input during installation
 ENV DEBIAN_FRONTEND=noninteractive
+# Prefer binary wheels over source distributions for faster pip installations
 ENV PIP_PREFER_BINARY=1
+# Ensures output from python is printed immediately to the terminal without buffering
 ENV PYTHONUNBUFFERED=1 
 
 # Install Python, git and other necessary tools
@@ -11,8 +13,7 @@ RUN apt-get update && apt-get install -y \
     python3.10 \
     python3-pip \
     git \
-    wget \
-    build-essential  # 包含 gcc g++ make, 避免 Triton 编译报错
+    wget
 
 RUN pip install --upgrade pip
 
@@ -24,22 +25,19 @@ RUN apt-get autoremove -y && apt-get clean -y && rm -rf /var/lib/apt/lists/*
 
 # Clone ComfyUI repository
 RUN git clone https://github.com/comfyanonymous/ComfyUI.git /comfyui
-WORKDIR /comfyui
-RUN git reset --hard b12b48e170ccff156dc6ec11242bb6af7d8437fd
-
-# Install PyTorch (CUDA 12.4 wheels)
-RUN pip3 install --no-cache-dir torch==2.5.1 torchvision==0.20.1 torchaudio==2.5.1 --index-url https://download.pytorch.org/whl/cu124
-RUN pip3 install --no-cache-dir xformers==0.0.28.post1 --index-url https://download.pytorch.org/whl/cu124
-
-# Install ComfyUI dependencies
-RUN pip3 install -r requirements.txt
-
-# Install Python runtime dependencies for the handler
-RUN  pip3 install runpod requests websocket-client
-
+# Force comfyui on a specific version
+RUN cd /comfyui && git reset --hard b12b48e170ccff156dc6ec11242bb6af7d8437fd
 
 # Change working directory to ComfyUI
 WORKDIR /comfyui
+
+# Install ComfyUI dependencies
+RUN pip3 install --no-cache-dir torch==2.1.1 torchvision==0.16.1 torchaudio==2.1.1 --index-url https://download.pytorch.org/whl/cu121
+RUN pip3 install --no-cache-dir xformers==0.0.23 --index-url https://download.pytorch.org/whl/cu121
+RUN pip3 install -r requirements.txt
+
+# Install runpod
+RUN pip3 install runpod requests
 
 # Create necessary directories upfront wan2.2 ti2v 5b
 # RUN mkdir -p models/checkpoints models/vae models/unet models/clip
