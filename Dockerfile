@@ -1,80 +1,42 @@
-# Build argument for base image selection
-ARG BASE_IMAGE=nvidia/cuda:12.6.3-cudnn-runtime-ubuntu24.04
+# Use Nvidia CUDA 12.4 base image
+FROM nvidia/cuda:12.4.131-cudnn-runtime-ubuntu22.04 as base
 
-# Stage 1: Base image with common dependencies
-FROM ${BASE_IMAGE} AS base
-
-# Build arguments for this stage (defaults provided by docker-bake.hcl)
-ENV COMFYUI_VERSION=0.3.49
-
-# Prevents prompts from packages asking for user input during installation
+# Prevents prompts during installation
 ENV DEBIAN_FRONTEND=noninteractive
-# Prefer binary wheels over source distributions for faster pip installations
 ENV PIP_PREFER_BINARY=1
-# Ensures output from python is printed immediately to the terminal without buffering
 ENV PYTHONUNBUFFERED=1 
 
-# Speed up some cmake builds
-ENV CMAKE_BUILD_PARALLEL_LEVEL=8
-
-# Impact pack deps
+# Install Python, git and other necessary tools
 RUN apt-get update && apt-get install -y \
-    build-essential \
-    cuda-toolkit-12-6 \
-    python3.12 \
-    python3.12-venv \
+    python3.10 \
+    python3-pip \
     git \
     wget \
-    libgl1 \
-    libglib2.0-0 \
-    libsm6 \
-    libxext6 \
-    libxrender1 \
-    ffmpeg \
-    && ln -sf /usr/bin/python3.12 /usr/bin/python \
-    && ln -sf /usr/bin/pip3 /usr/bin/pip
+    build-essential  # 包含 gcc g++ make, 避免 Triton 编译报错
+
+RUN pip install --upgrade pip
+
+# Impact pack deps
+RUN apt-get install -y libgl1-mesa-glx libglib2.0-0
 
 # Clean up to reduce image size
 RUN apt-get autoremove -y && apt-get clean -y && rm -rf /var/lib/apt/lists/*
 
-# Install uv (latest) using official installer and create isolated venv
-RUN wget -qO- https://astral.sh/uv/install.sh | sh \
-    && ln -s /root/.local/bin/uv /usr/local/bin/uv \
-    && ln -s /root/.local/bin/uvx /usr/local/bin/uvx \
-    && uv venv /opt/venv
-
-# Use the virtual environment for all subsequent commands
-ENV PATH="/opt/venv/bin:${PATH}"
-ENV CC=/usr/bin/gcc
-# Install comfy-cli + dependencies needed by it to install ComfyUI
-RUN uv pip install comfy-cli pip setuptools wheel
-
-# Install ComfyUI
-RUN /usr/bin/yes | comfy --workspace /comfyui install --version "${COMFYUI_VERSION}" --nvidia; 
-
-# Change working directory to ComfyUI
+# Clone ComfyUI repository
+RUN git clone https://github.com/comfyanonymous/ComfyUI.git /comfyui
 WORKDIR /comfyui
+RUN git reset --hard b12b48e170ccff156dc6ec11242bb6af7d8437fd
 
-# Support for the network volume
-ADD src/extra_model_paths.yaml ./
+# Install PyTorch (CUDA 12.4 wheels)
+RUN pip3 install --no-cache-dir torch==2.5.1 torchvision==0.20.1 torchaudio==2.5.1 --index-url https://download.pytorch.org/whl/cu124
+RUN pip3 install --no-cache-dir xformers==0.0.28.post1 --index-url https://download.pytorch.org/whl/cu124
 
-# Go back to the root
-WORKDIR /
+# Install ComfyUI dependencies
+RUN pip3 install -r requirements.txt
 
 # Install Python runtime dependencies for the handler
-RUN uv pip install runpod requests websocket-client
+RUN  pip3 install runpod requests websocket-client
 
-
-# Add script to install custom nodes
-COPY scripts/comfy-node-install.sh /usr/local/bin/comfy-node-install
-RUN chmod +x /usr/local/bin/comfy-node-install
-
-# Prevent pip from asking for confirmation during uninstall steps in custom nodes
-ENV PIP_NO_INPUT=1
-
-# Copy helper script to switch Manager network mode at container start
-COPY scripts/comfy-manager-set-mode.sh /usr/local/bin/comfy-manager-set-mode
-RUN chmod +x /usr/local/bin/comfy-manager-set-mode
 
 # Stage 2: Download models
 FROM base AS downloader
@@ -167,9 +129,6 @@ RUN cd ComfyUI-KJNodes && pip3 install -r requirements.txt
 RUN git clone https://github.com/jamesWalker55/comfyui-various.git
  # Go back to the root
 WORKDIR /
-
-RUN uv pip install sageattention
-
 
 # Add the start and the handler
 ADD src/start.sh handler.py test_input.json  ./
