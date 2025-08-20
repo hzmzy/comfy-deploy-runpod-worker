@@ -1,5 +1,5 @@
 # Build argument for base image selection
-ARG BASE_IMAGE=nvidia/cuda:12.6.3-cudnn-devel-ubuntu24.04
+ARG BASE_IMAGE=nvidia/cuda:12.6.3-cudnn-runtime-ubuntu24.04
 
 # Stage 1: Base image with common dependencies
 FROM ${BASE_IMAGE} AS base
@@ -20,6 +20,7 @@ ENV CMAKE_BUILD_PARALLEL_LEVEL=8
 # Impact pack deps
 RUN apt-get update && apt-get install -y \
     build-essential \
+    cuda-toolkit-12-6 \
     python3.12 \
     python3.12-venv \
     git \
