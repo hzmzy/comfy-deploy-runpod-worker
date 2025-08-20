@@ -38,9 +38,6 @@ RUN pip3 install -r requirements.txt
 RUN  pip3 install runpod requests websocket-client
 
 
-# Stage 2: Download models
-FROM base AS downloader
-
 # Change working directory to ComfyUI
 WORKDIR /comfyui
 
@@ -98,14 +95,6 @@ RUN  wget -O models/text_encoders/umt5-xxl-enc-bf16.safetensors https://huggingf
 #RUN  wget -O models/diffusion_models/Wan2_2-I2V-A14B-HIGH_fp8_e4m3fn_scaled_KJ.safetensors https://huggingface.co/Kijai/WanVideo_comfy_fp8_scaled/resolve/main/T2V/Wan2_2-T2V-A14B_HIGH_fp8_e4m3fn_scaled_KJ.safetensors
 #text_encoders
 #RUN  wget -O models/text_encoders/umt5-xxl-enc-bf16.safetensors https://huggingface.co/Kijai/WanVideo_comfy/resolve/main/umt5-xxl-enc-bf16.safetensors
-
-
-# Stage 3: Final image
-FROM base AS final
-
-# Install custom nodes
-# Copy models from stage 2 to the final image
-COPY --from=downloader /comfyui/models /comfyui/models
 
 
 WORKDIR /comfyui/custom_nodes
