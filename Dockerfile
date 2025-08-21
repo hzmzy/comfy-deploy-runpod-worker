@@ -7,7 +7,11 @@ ENV PYTHONUNBUFFERED=1
 
 # Install Python, git, and dependencies in one layer
 RUN apt-get update && apt-get install -y \
-    python3.11.9 python3-pip git wget \
+    software-properties-common \
+    && add-apt-repository ppa:deadsnakes/ppa \
+    && apt-get update \
+    && apt-get install -y \
+    python3.11 python3-pip git wget \
     libgl1-mesa-glx libglib2.0-0 \
  && rm -rf /var/lib/apt/lists/*
 
@@ -16,7 +20,7 @@ RUN pip install --upgrade pip
 # Clone ComfyUI repo and checkout fixed commit
 RUN git clone https://github.com/comfyanonymous/ComfyUI.git /comfyui \
  && cd /comfyui \
- && git reset --hard 0a3d062e0660741146d50f6601e3eeca211d92d5
+# && git reset --hard 2f74e17975696d829af455845c584574bbc85774
 
 WORKDIR /comfyui
 
@@ -24,13 +28,13 @@ WORKDIR /comfyui
 RUN pip3 install --no-cache-dir torch==2.4.1+cu124 torchvision==0.19.1+cu124 torchaudio==2.4.1+cu124 --index-url https://download.pytorch.org/whl/cu124
 
 # Install xformers (compatible version for PyTorch 2.4.x)
-RUN pip3 install --no-cache-dir xformers==0.0.28.post3 --index-url https://download.pytorch.org/whl/cu124
+RUN pip3 install --no-cache-dir xformers==0.0.28.post1 --index-url https://download.pytorch.org/whl/cu124
 
 # Install ComfyUI dependencies
 RUN pip3 install -r requirements.txt
 
 # Install runpod client
-RUN pip3 install runpod requests
+RUN pip3 install runpod requests websocket-client
 
 # Create necessary directories upfront wan2.2 ti2v 5b
 # RUN mkdir -p models/checkpoints models/vae models/unet models/clip
@@ -89,8 +93,8 @@ RUN  wget -O models/text_encoders/umt5-xxl-enc-bf16.safetensors https://huggingf
 
 WORKDIR /comfyui/custom_nodes
 
-RUN git clone https://github.com/BennyKok/comfyui-deploy.git && cd comfyui-deploy && git reset --hard 6e068590a0831d10009074e65d23a083b31dd2d7
-RUN cd comfyui-deploy && pip3 install -r requirements.txt
+#RUN git clone https://github.com/BennyKok/comfyui-deploy.git && cd comfyui-deploy && git reset --hard 6e068590a0831d10009074e65d23a083b31dd2d7
+#RUN cd comfyui-deploy && pip3 install -r requirements.txt
 
 # 安装 ComfyUI-ComfyUI_essentials
 RUN git clone https://github.com/cubiq/ComfyUI_essentials.git
@@ -113,7 +117,7 @@ RUN cd ComfyUI-VideoHelperSuite && pip3 install -r requirements.txt
 WORKDIR /
 
 # Add the start and the handler
-ADD src/start.sh src/handler.py test_input.json  ./
+ADD src/start.sh handler.py test_input.json  ./
 
 VOLUME /comfyui/models
 VOLUME /comfyui/input
