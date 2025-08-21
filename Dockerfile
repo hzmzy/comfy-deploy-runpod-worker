@@ -1,5 +1,5 @@
 # Use Nvidia CUDA base image
-FROM nvidia/cuda:12.4.0-cudnn8-runtime-ubuntu22.04 as base
+FROM nvidia/cuda:12.4.1-runtime-ubuntu20.04 as base
 
 ENV DEBIAN_FRONTEND=noninteractive
 ENV PIP_PREFER_BINARY=1
