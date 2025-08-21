@@ -7,7 +7,7 @@ ENV PYTHONUNBUFFERED=1
 
 # Install Python, git, and dependencies in one layer
 RUN apt-get update && apt-get install -y \
-    python3.10 python3-pip git wget \
+    python3.11.9 python3-pip git wget \
     libgl1-mesa-glx libglib2.0-0 \
  && rm -rf /var/lib/apt/lists/*
 
