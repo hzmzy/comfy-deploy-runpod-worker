@@ -96,7 +96,6 @@ RUN  wget -O models/text_encoders/umt5-xxl-enc-bf16.safetensors https://huggingf
 
 WORKDIR /comfyui/custom_nodes
 
-
 RUN git clone https://github.com/BennyKok/comfyui-deploy.git && cd comfyui-deploy && git reset --hard 6e068590a0831d10009074e65d23a083b31dd2d7
 RUN cd comfyui-deploy && pip3 install -r requirements.txt
 
@@ -107,16 +106,16 @@ RUN cd ComfyUI_essentials && pip3 install -r requirements.txt
 RUN git clone https://github.com/Kosinkadink/ComfyUI-VideoHelperSuite.git
 RUN cd ComfyUI-VideoHelperSuite && pip3 install -r requirements.txt
 # 安装 ComfyUI-WanVideoWrapper
-RUN git clone https://github.com/kijai/ComfyUI-WanVideoWrapper.git && git reset --hard 1e638a140b2f459595fafc73ade5ea5b4024d4b4
-RUN cd ComfyUI-WanVideoWrapper && pip3 install -r requirements.txt
-# 安装 ComfyUI_LayerStyle
-RUN git clone https://github.com/chflame163/ComfyUI_LayerStyle.git
-RUN cd ComfyUI_LayerStyle && pip3 install -r requirements.txt
-
-RUN git clone https://github.com/kijai/ComfyUI-KJNodes.git
-RUN cd ComfyUI-KJNodes && pip3 install -r requirements.txt
-
-RUN git clone https://github.com/jamesWalker55/comfyui-various.git
+#RUN git clone https://github.com/kijai/ComfyUI-WanVideoWrapper.git && git reset --hard 1e638a140b2f459595fafc73ade5ea5b4024d4b4
+#RUN cd ComfyUI-WanVideoWrapper && pip3 install -r requirements.txt
+## 安装 ComfyUI_LayerStyle
+#RUN git clone https://github.com/chflame163/ComfyUI_LayerStyle.git
+#RUN cd ComfyUI_LayerStyle && pip3 install -r requirements.txt
+#
+#RUN git clone https://github.com/kijai/ComfyUI-KJNodes.git
+#RUN cd ComfyUI-KJNodes && pip3 install -r requirements.txt
+#
+#RUN git clone https://github.com/jamesWalker55/comfyui-various.git
  # Go back to the root
 WORKDIR /
 
