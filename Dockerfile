@@ -122,10 +122,7 @@ RUN git clone https://github.com/jamesWalker55/comfyui-various.git
 WORKDIR /
 
 # Add the start and the handler
-ADD src/start.sh handler.py test_input.json  ./
-
-RUN chmod +x /start.sh
-# Set the default command to run when starting the container
+ADD src/start.sh src/handler.py test_input.json  ./
 
 VOLUME /comfyui/models
 VOLUME /comfyui/input
@@ -133,4 +130,7 @@ VOLUME /comfyui/output
 
 EXPOSE 8188
 
-CMD ["/start.sh"]
+RUN chmod +x /start.sh
+
+# Start the container
+CMD /start.sh
