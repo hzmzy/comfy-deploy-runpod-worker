@@ -1,5 +1,5 @@
 # Use Nvidia CUDA base image
-FROM nvidia/cuda:12.4.1-runtime-ubuntu20.04 as base
+FROM nvidia/cuda:12.4.1-cudnn-runtime-ubuntu20.04 as base
 
 ENV DEBIAN_FRONTEND=noninteractive
 ENV PIP_PREFER_BINARY=1
@@ -11,11 +11,12 @@ RUN apt-get update && apt-get install -y \
     && add-apt-repository ppa:deadsnakes/ppa \
     && apt-get update \
     && apt-get install -y \
-    python3.11 python3-pip git wget \
+    python3.11 git wget \
     libgl1-mesa-glx libglib2.0-0 \
  && rm -rf /var/lib/apt/lists/*
 
-RUN pip install --upgrade pip
+RUN apt-get update && apt-get install -y curl \
+ && curl -sS https://bootstrap.pypa.io/get-pip.py | python3.11
 
 # Clone ComfyUI repo and checkout fixed commit
 RUN git clone https://github.com/comfyanonymous/ComfyUI.git /comfyui \
