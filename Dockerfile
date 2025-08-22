@@ -47,7 +47,7 @@ ENV PATH="/opt/venv/bin:${PATH}"
 RUN uv pip install comfy-cli pip setuptools wheel
 
 # Install ComfyUI
-RUN /usr/bin/yes | comfy --workspace /comfyui install --version "${COMFYUI_VERSION}" --nvidia; 
+RUN /usr/bin/yes | comfy --workspace /comfyui install --pr "https://github.com/Comfy-Org/ComfyUI_frontend/pull/5167" --skip-manager --version "${COMFYUI_VERSION}" --nvidia;
 
 
 # Change working directory to ComfyUI
