@@ -84,7 +84,7 @@ FROM base AS downloader
 WORKDIR /comfyui
 
 # Create necessary directories upfront
-# RUN mkdir -p models/checkpoints models/vae models/unet models/clip
+RUN mkdir -p models/checkpoints models/vae models/unet models/clip
 # upscale_models
 RUN  wget -O models/upscale_models/4x-UltraSharp.pth https://huggingface.co/woods55/mine/resolve/main/4xLSDIR.pth?download=true
 #vae
