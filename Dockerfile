@@ -20,8 +20,8 @@ RUN apt-get update && apt-get install -y curl \
 
 # Clone ComfyUI repo and checkout fixed commit
 RUN git clone https://github.com/comfyanonymous/ComfyUI.git /comfyui \
-# && cd /comfyui \
-# && git reset --hard 2f74e17975696d829af455845c584574bbc85774
+ && cd /comfyui \
+ && git reset --hard 2f74e17975696d829af455845c584574bbc85774
 
 WORKDIR /comfyui
 
