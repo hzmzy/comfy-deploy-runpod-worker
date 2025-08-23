@@ -136,14 +136,8 @@
       },
       "322": {
         "inputs": {
-          "width": [
-            "323",
-            0
-          ],
-          "height": [
-            "324",
-            0
-          ],
+          "width": 512,
+          "height": 512,
           "batch_size": 1
         },
         "class_type": "EmptyLatentImage",
@@ -151,24 +145,7 @@
           "title": "空Latent图像"
         }
       },
-      "323": {
-        "inputs": {
-          "int": 512
-        },
-        "class_type": "InstaCInteger",
-        "_meta": {
-          "title": "width"
-        }
-      },
-      "324": {
-        "inputs": {
-          "int": 512
-        },
-        "class_type": "InstaCInteger",
-        "_meta": {
-          "title": "height"
-        }
-      },
+
       "325": {
         "inputs": {
           "vae_name": "ae.safetensors"
