@@ -114,7 +114,7 @@ RUN cd ComfyUI_essentials && pip3 install -r requirements.txt
 RUN git clone https://github.com/Kosinkadink/ComfyUI-VideoHelperSuite.git
 RUN cd ComfyUI-VideoHelperSuite && pip3 install -r requirements.txt
 # 安装 ComfyUI-WanVideoWrapper
-RUN git clone https://github.com/kijai/ComfyUI-WanVideoWrapper.git && cd ComfyUI-WanVideoWrapper && git reset --hard 1e638a140b2f459595fafc73ade5ea5b4024d4b4
+RUN git clone https://github.com/kijai/ComfyUI-WanVideoWrapper.git && cd ComfyUI-WanVideoWrapper && git reset --hard 4eeaf1ea194ed32e0a2fef2a16201c450a8da40f
 RUN cd ComfyUI-WanVideoWrapper && pip3 install -r requirements.txt
 # 安装 ComfyUI_LayerStyle
 RUN git clone https://github.com/chflame163/ComfyUI_LayerStyle.git
