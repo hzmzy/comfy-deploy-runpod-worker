@@ -88,7 +88,7 @@ RUN mkdir -p models/checkpoints models/vae models/unet models/clip
 # upscale_models
 RUN  wget -O models/upscale_models/4x-UltraSharp.pth https://huggingface.co/woods55/mine/resolve/main/4xLSDIR.pth?download=true
 #vae
-RUN  wget -O models/vae/ae.safetensors https://huggingface.co/black-forest-labs/FLUX.1-schnell/resolve/main/ae.safetensors
+RUN  wget -O models/vae/ae.safetensors https://huggingface.co/modelzpalace/ae.safetensors/resolve/main/ae.safetensors
 #text_encoders
 RUN  wget -O models/text_encoders/t5xxl_fp8_e4m3fn.safetensors https://huggingface.co/fmoraes2k/t5xxl_fp8_e4m3fn.safetensors/resolve/main/t5xxl_fp8_e4m3fn.safetensors
 #checkpoints
