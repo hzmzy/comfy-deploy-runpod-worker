@@ -86,7 +86,7 @@ RUN  wget -O models/upscale_models/4x-UltraSharp.pth https://huggingface.co/wood
 #vae
 RUN  wget -O models/vae/ae.safetensors https://huggingface.co/modelzpalace/ae.safetensors/resolve/main/ae.safetensors
 #text_encoders
-RUN  wget -O models/text_encoders/umt5-xxl-enc-bf16.safetensors https://huggingface.co/Kijai/WanVideo_comfy/resolve/main/umt5-xxl-enc-bf16.safetensors
+RUN  wget -O models/text_encoders/t5xxl_fp8_e4m3fn.safetensors https://huggingface.co/fmoraes2k/t5xxl_fp8_e4m3fn.safetensors/resolve/main/t5xxl_fp8_e4m3fn.safetensors
 RUN  wget -O models/text_encoders/clip_l.safetensors https://huggingface.co/comfyanonymous/flux_text_encoders/resolve/main/clip_l.safetensors
 #checkpoints
 RUN  wget -O models/checkpoints/FLUX.1-Krea-Asian_fp8.safetensors https://huggingface.co/woods55/mine/resolve/main/flux1-dev_fp8.safetensors
