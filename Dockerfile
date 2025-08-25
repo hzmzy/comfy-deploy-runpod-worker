@@ -44,7 +44,7 @@ RUN wget -qO- https://astral.sh/uv/install.sh | sh \
 ENV PATH="/opt/venv/bin:${PATH}"
 
 # Install comfy-cli + dependencies needed by it to install ComfyUI
-RUN uv pip install comfy-cli pip setuptools wheel
+RUN uv pip install comfy-cli pip setuptools wheel matplotlib
 
 # Install ComfyUI
 RUN /usr/bin/yes | comfy --workspace /comfyui install --skip-manager --version "${COMFYUI_VERSION}" --nvidia;
@@ -60,7 +60,7 @@ ADD src/extra_model_paths.yaml ./
 WORKDIR /
 
 # Install Python runtime dependencies for the handler
-RUN uv pip install runpod requests websocket-client matplotlib
+RUN uv pip install runpod requests websocket-client
 
 # Add script to install custom nodes
 COPY scripts/comfy-node-install.sh /usr/local/bin/comfy-node-install
