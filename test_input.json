@@ -1,18 +1,6 @@
 {
   "input": {
     "workflow": {
-      "311": {
-        "inputs": {
-          "clip_name1": "t5xxl_fp8_e4m3fn.safetensors",
-          "clip_name2": "clip_l.safetensors",
-          "type": "flux",
-          "device": "default"
-        },
-        "class_type": "DualCLIPLoader",
-        "_meta": {
-          "title": "双CLIP加载器"
-        }
-      },
       "312": {
         "inputs": {
           "text": "beautiful Asian woman, delicate facial features, long flowing hair, elegant dress, standing in scenic nature, cherry blossoms, lake, mountains, soft sunlight, cinematic, ultra-detailed, 8k, masterpiece",
@@ -23,7 +11,7 @@
             ]
           },
           "clip": [
-            "311",
+            "319",
             0
           ]
         },
@@ -111,7 +99,7 @@
       },
       "319": {
         "inputs": {
-          "ckpt_name": "FLUX.1-Krea-Asian_fp8.safetensors"
+          "ckpt_name": "XXMix_9realisticSDXL.safetensors"
         },
         "class_type": "CheckpointLoaderSimple",
         "_meta": {
@@ -125,7 +113,7 @@
             0
           ],
           "vae": [
-            "325",
+            "319",
             0
           ]
         },
@@ -143,15 +131,6 @@
         "class_type": "EmptyLatentImage",
         "_meta": {
           "title": "空Latent图像"
-        }
-      },
-      "325": {
-        "inputs": {
-          "vae_name": "ae.safetensors"
-        },
-        "class_type": "VAELoader",
-        "_meta": {
-          "title": "加载VAE"
         }
       },
       "326": {

@@ -63,15 +63,15 @@ WORKDIR /
 RUN uv pip install runpod requests websocket-client
 
 # Add script to install custom nodes
-COPY scripts/comfy-node-install.sh /usr/local/bin/comfy-node-install
-RUN chmod +x /usr/local/bin/comfy-node-install
+#COPY scripts/comfy-node-install.sh /usr/local/bin/comfy-node-install
+#RUN chmod +x /usr/local/bin/comfy-node-install
 
 # Prevent pip from asking for confirmation during uninstall steps in custom nodes
 ENV PIP_NO_INPUT=1
 
 # Copy helper script to switch Manager network mode at container start
-COPY scripts/comfy-manager-set-mode.sh /usr/local/bin/comfy-manager-set-mode
-RUN chmod +x /usr/local/bin/comfy-manager-set-mode
+#COPY scripts/comfy-manager-set-mode.sh /usr/local/bin/comfy-manager-set-mode
+#RUN chmod +x /usr/local/bin/comfy-manager-set-mode
 
 # Stage 2: Download models
 FROM base AS downloader
@@ -81,15 +81,11 @@ WORKDIR /comfyui
 
 # Create necessary directories upfront
 RUN mkdir -p models/checkpoints models/vae models/unet models/clip
-# upscale_models
-RUN  wget -O models/upscale_models/4x-UltraSharp.pth https://huggingface.co/woods55/mine/resolve/main/4xLSDIR.pth?download=true
-#vae
-RUN  wget -O models/vae/ae.safetensors https://huggingface.co/modelzpalace/ae.safetensors/resolve/main/ae.safetensors
-#text_encoders
-RUN  wget -O models/text_encoders/t5xxl_fp8_e4m3fn.safetensors https://huggingface.co/fmoraes2k/t5xxl_fp8_e4m3fn.safetensors/resolve/main/t5xxl_fp8_e4m3fn.safetensors
-RUN  wget -O models/text_encoders/clip_l.safetensors https://huggingface.co/comfyanonymous/flux_text_encoders/resolve/main/clip_l.safetensors
+#embeddings
+RUN  wget -O models/embeddings/Stable_Yogis_PDXL_Positives.safetensors https://huggingface.co/woods55/mine/resolve/main/Stable_Yogis_PDXL_Positives.safetensors?download=true
+RUN  wget -O models/embeddings/Stable_Yogis_PDXL_Negatives-neg.safetensors https://huggingface.co/woods55/mine/resolve/main/Stable_Yogis_PDXL_Negatives-neg.safetensors?download=true
 #checkpoints
-RUN  wget -O models/checkpoints/FLUX.1-Krea-Asian_fp8.safetensors https://huggingface.co/woods55/mine/resolve/main/flux1-dev_fp8.safetensors
+RUN  wget -O models/checkpoints/XXMix_9realisticSDXL.safetensors https://civitai.com/api/download/models/163192
 # Stage 3: Final image
 FROM base AS final
 
