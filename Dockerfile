@@ -95,7 +95,7 @@ COPY --from=downloader /comfyui/models /comfyui/models
 WORKDIR /comfyui/custom_nodes
 
 # 安装 ComfyUI_Comfyroll_CustomNodes
-RUN git clone https://github.com/Suzie1/ComfyUI_Comfyroll_CustomNodes.git
+RUN #git clone https://github.com/Suzie1/ComfyUI_Comfyroll_CustomNodes.git
 
  # Go back to the root
 WORKDIR /
