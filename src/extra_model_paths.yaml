@@ -6,9 +6,9 @@ runpod_worker_comfy:
 #  configs: models/configs/
 #  controlnet: models/controlnet/
 #  embeddings: models/embeddings/
-  loras: models/loras/
-  upscale_models: models/upscale_models/
-  diffusion_models: models/diffusion_models/
-  text_encoders: models/text_encoders/
-  vae: models/vae/
+  loras: /
+  upscale_models: /
+  diffusion_models: /
+  text_encoders: /
+  vae: /
 #  unet: models/unet/
