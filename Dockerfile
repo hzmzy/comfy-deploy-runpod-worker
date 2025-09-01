@@ -60,7 +60,7 @@ ADD src/extra_model_paths.yaml ./
 WORKDIR /
 
 # Install Python runtime dependencies for the handler
-RUN uv pip install runpod requests websocket-client
+RUN uv pip install runpod requests websocket-client sageattention
 
 # Add application code and scripts
 ADD src/start.sh handler.py test_input.json ./
@@ -113,6 +113,7 @@ RUN cd ComfyUI_essentials && pip3 install -r requirements.txt
 RUN git clone https://github.com/Kosinkadink/ComfyUI-VideoHelperSuite.git
 RUN cd ComfyUI-VideoHelperSuite && pip3 install -r requirements.txt
 # 安装 ComfyUI-WanVideoWrapper
+
 RUN git clone https://github.com/kijai/ComfyUI-WanVideoWrapper.git && cd ComfyUI-WanVideoWrapper && git reset --hard 4eeaf1ea194ed32e0a2fef2a16201c450a8da40f
 RUN cd ComfyUI-WanVideoWrapper && pip3 install -r requirements.txt
 # 安装 ComfyUI_LayerStyle
@@ -121,6 +122,7 @@ RUN cd ComfyUI_LayerStyle && pip3 install -r requirements.txt
 #安装 ComfyUI-KJNodes
 RUN git clone https://github.com/kijai/ComfyUI-KJNodes.git
 RUN cd ComfyUI-KJNodes && pip3 install -r requirements.txt
+
 
  # Go back to the root
 WORKDIR /
