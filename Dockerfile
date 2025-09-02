@@ -28,6 +28,7 @@ RUN apt-get update && apt-get install -y \
     libxext6 \
     libxrender1 \
     ffmpeg \
+    build-essential \
     && ln -sf /usr/bin/python3.12 /usr/bin/python \
     && ln -sf /usr/bin/pip3 /usr/bin/pip
 
@@ -47,7 +48,7 @@ ENV PATH="/opt/venv/bin:${PATH}"
 RUN uv pip install comfy-cli pip setuptools wheel
 
 # Install ComfyUI
-RUN /usr/bin/yes | comfy --workspace /comfyui install --version "${COMFYUI_VERSION}" --nvidia; 
+RUN /usr/bin/yes | comfy --workspace /comfyui install --skip-manager --version "${COMFYUI_VERSION}" --nvidia;
 
 
 # Change working directory to ComfyUI
