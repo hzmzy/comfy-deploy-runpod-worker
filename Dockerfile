@@ -1,5 +1,5 @@
 # Build argument for base image selection
-ARG BASE_IMAGE=nvcr.io/nvidia/cuda:12.6.3-cudnn-devel-ubuntu24.04
+ARG BASE_IMAGE=nvcr.io/nvidia/cuda:12.8.1-cudnn-devel-ubuntu24.04
 
 # Stage 1: Base image with common dependencies
 FROM ${BASE_IMAGE} AS base
@@ -8,18 +8,17 @@ FROM ${BASE_IMAGE} AS base
 ENV COMFYUI_VERSION=0.3.49
 
 # Prevents prompts from packages asking for user input during installation
-ENV DEBIAN_FRONTEND=noninteractive
-# Prefer binary wheels over source distributions for faster pip installations
-ENV PIP_PREFER_BINARY=1
-# Ensures output from python is printed immediately to the terminal without buffering
-ENV PYTHONUNBUFFERED=1
-# Speed up some cmake builds
-ENV CMAKE_BUILD_PARALLEL_LEVEL=8
+ENV DEBIAN_FRONTEND=noninteractive \
+   PIP_PREFER_BINARY=1 \
+   PYTHONUNBUFFERED=1 \
+   CMAKE_BUILD_PARALLEL_LEVEL=8
 
 # Install Python, git and other necessary tools
 RUN apt-get update && apt-get install -y \
     python3.12 \
     python3.12-venv \
+    python3.12-dev \
+    python3-pip \
     git \
     wget \
     libgl1 \
@@ -28,7 +27,10 @@ RUN apt-get update && apt-get install -y \
     libxext6 \
     libxrender1 \
     ffmpeg \
+    ninja-build \
+    aria2 \
     build-essential \
+    gcc \
     && ln -sf /usr/bin/python3.12 /usr/bin/python \
     && ln -sf /usr/bin/pip3 /usr/bin/pip
 
@@ -45,11 +47,12 @@ RUN wget -qO- https://astral.sh/uv/install.sh | sh \
 ENV PATH="/opt/venv/bin:${PATH}"
 
 # Install comfy-cli + dependencies needed by it to install ComfyUI
-RUN uv pip install comfy-cli pip setuptools wheel
+RUN uv pip install triton comfy-cli pip setuptools wheel
 
 # Install ComfyUI
 RUN /usr/bin/yes | comfy --workspace /comfyui install --skip-manager --version "${COMFYUI_VERSION}" --nvidia;
 
+RUN uv pip install opencv-python
 
 # Change working directory to ComfyUI
 WORKDIR /comfyui
