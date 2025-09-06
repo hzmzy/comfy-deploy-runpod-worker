@@ -91,15 +91,6 @@ WORKDIR /comfyui
 # RUN mkdir -p models/checkpoints models/vae models/unet models/clip
 # upscale_models
 #RUN  wget -O models/upscale_models/4x-UltraSharp.pth https://huggingface.co/woods55/mine/resolve/main/4xLSDIR.pth?download=true
-#loras
-RUN  #wget -O models/loras/lightx2v_I2V_14B_480p_cfg_step_distill_rank64_bf16.safetensors https://huggingface.co/Kijai/WanVideo_comfy/resolve/main/Lightx2v/lightx2v_I2V_14B_480p_cfg_step_distill_rank64_bf16.safetensors
-#vae
-RUN  #wget -O models/vae/Wan2_1_VAE_bf16.safetensors https://huggingface.co/Kijai/WanVideo_comfy/resolve/main/Wan2_1_VAE_bf16.safetensors
-#diffusion_models
-RUN  #wget -O models/diffusion_models/Wan2_2-I2V-A14B-HIGH_fp8_e4m3fn_scaled_KJ.safetensors https://huggingface.co/Kijai/WanVideo_comfy_fp8_scaled/resolve/main/I2V/Wan2_2-I2V-A14B-HIGH_fp8_e4m3fn_scaled_KJ.safetensors
-RUN  #wget -O models/diffusion_models/Wan2_2-I2V-A14B-LOW_fp8_e4m3fn_scaled_KJ.safetensors https://huggingface.co/Kijai/WanVideo_comfy_fp8_scaled/resolve/main/I2V/Wan2_2-I2V-A14B-LOW_fp8_e4m3fn_scaled_KJ.safetensors
-#text_encoders
-RUN  #wget -O models/text_encoders/umt5-xxl-enc-bf16.safetensors https://huggingface.co/Kijai/WanVideo_comfy/resolve/main/umt5-xxl-enc-bf16.safetensors
 
 # Stage 3: Final image
 FROM base AS final
@@ -126,6 +117,25 @@ RUN cd ComfyUI_LayerStyle && pip3 install -r requirements.txt
 #安装 ComfyUI-KJNodes
 RUN git clone https://github.com/kijai/ComfyUI-KJNodes.git
 RUN cd ComfyUI-KJNodes && pip3 install -r requirements.txt
+#安装 ComfyUI-Nudenet
+RUN git clone https://github.com/phuvinh010701/ComfyUI-Nudenet.git
+RUN cd ComfyUI-Nudenet && pip3 install -r requirements.txt
+#安装 ComfyUI-segment-anything-2
+RUN git clone https://github.com/kijai/ComfyUI-segment-anything-2.git
+#安装 ComfyUI-Florence2
+RUN git clone https://github.com/kijai/ComfyUI-Florence2.git
+RUN cd ComfyUI-Florence2 && pip3 install -r requirements.txt
+#安装 ComfyUI-Addoor
+RUN git clone https://github.com/Eagle-CN/ComfyUI-Addoor.git
+RUN cd ComfyUI-Addoor && pip3 install -r requirements.txt
+#安装 ComfyUI-Custom-Scripts
+RUN git clone https://github.com/pythongosssss/ComfyUI-Custom-Scripts.git
+#安装 ComfyUI-TeaCache
+RUN git clone https://github.com/welltop-cn/ComfyUI-TeaCache.git
+RUN cd ComfyUI-TeaCache && pip3 install -r requirements.txt
+#安装 ComfyUI_JPS-Nodes
+RUN git clone https://github.com/JPS-GER/ComfyUI_JPS-Nodes.git
+
 
 
  # Go back to the root
