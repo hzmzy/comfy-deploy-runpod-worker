@@ -11,4 +11,5 @@ runpod_worker_comfy:
   diffusion_models: /runpod-volume/
   text_encoders: /runpod-volume/
   vae: /runpod-volume/
+  clip_vision: /runpod-volume/
 #  unet: models/unet/
