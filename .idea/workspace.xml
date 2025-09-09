@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="993fbf37-8be4-4049-b31c-eadc65ecbd79" name="更改" comment="init:">
+      <change afterPath="$PROJECT_DIR$/.github/CODE_OF_CONDUCT.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.github/CONTRIBUTING.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.github/ISSUE_TEMPLATE/BUG_REPORT.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.github/ISSUE_TEMPLATE/FEATURE_REQUEST.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.github/PULL_REQUEST_TEMPLATE.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.github/SECURITY.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.github/workflows/docker-dev.yml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.github/workflows/docker-release.yml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/2024-11-27_12-36-53_snapshot.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/CHANGELOG.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Dockerfile" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/LICENSE" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/worker_sitting_in_comfy_chair.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/worker_sitting_in_comfy_chair.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docker-compose.yml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/deps.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/extra_model_paths.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/install_deps.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/rp_handler.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/start.sh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test_input.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test_resources/images/ComfyUI_00001_.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/test_rp_handler.py" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="image-video-wan2.2_b14" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;hzmzy&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/hzmzy/comfyui-runpod-worker.git",
+    "accountId": "9ee75a04-227e-424d-a5e8-64c7368c9ee1"
+  }
+}]]></component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 2
+}</component>
+  <component name="ProjectId" id="325MPXZ0uFiBphHpFy9b65f9Iwa" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "reactor-tmp",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-9823dce3aa75-fbdcb00ec9e3-intellij.indexing.shared.core-IU-251.26927.53" />
+        <option value="bundled-js-predefined-d6986cc7102b-09060db00ec0-JavaScript-IU-251.26927.53" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="默认任务">
+      <changelist id="993fbf37-8be4-4049-b31c-eadc65ecbd79" name="更改" comment="" />
+      <created>1756705957046</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1756705957046</updated>
+      <workItem from="1756705958140" duration="310000" />
+      <workItem from="1756715309468" duration="6981000" />
+      <workItem from="1756727099802" duration="31102000" />
+      <workItem from="1757051232616" duration="4745000" />
+      <workItem from="1757157635291" duration="24789000" />
+    </task>
+    <task id="LOCAL-00001" summary="init:">
+      <option name="closed" value="true" />
+      <created>1756706138749</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1756706138749</updated>
+    </task>
+    <task id="LOCAL-00002" summary="init:">
+      <option name="closed" value="true" />
+      <created>1756716713118</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1756716713118</updated>
+    </task>
+    <task id="LOCAL-00003" summary="init:">
+      <option name="closed" value="true" />
+      <created>1756720071414</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1756720071414</updated>
+    </task>
+    <task id="LOCAL-00004" summary="init:">
+      <option name="closed" value="true" />
+      <created>1756727615657</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1756727615657</updated>
+    </task>
+    <task id="LOCAL-00005" summary="init:">
+      <option name="closed" value="true" />
+      <created>1756777518224</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1756777518224</updated>
+    </task>
+    <task id="LOCAL-00006" summary="init:">
+      <option name="closed" value="true" />
+      <created>1756781774594</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1756781774594</updated>
+    </task>
+    <task id="LOCAL-00007" summary="init:">
+      <option name="closed" value="true" />
+      <created>1756787998201</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1756787998201</updated>
+    </task>
+    <task id="LOCAL-00008" summary="init:">
+      <option name="closed" value="true" />
+      <created>1756791885935</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1756791885935</updated>
+    </task>
+    <task id="LOCAL-00009" summary="init:">
+      <option name="closed" value="true" />
+      <created>1756906931919</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1756906931919</updated>
+    </task>
+    <task id="LOCAL-00010" summary="init:">
+      <option name="closed" value="true" />
+      <created>1757165368502</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1757165368502</updated>
+    </task>
+    <task id="LOCAL-00011" summary="init:">
+      <option name="closed" value="true" />
+      <created>1757215720248</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1757215720248</updated>
+    </task>
+    <task id="LOCAL-00012" summary="init:">
+      <option name="closed" value="true" />
+      <created>1757215789374</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1757215789374</updated>
+    </task>
+    <task id="LOCAL-00013" summary="init:">
+      <option name="closed" value="true" />
+      <created>1757216390540</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1757216390540</updated>
+    </task>
+    <option name="localTasksCounter" value="14" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="FILTERS">
+                <map>
+                  <entry key="branch">
+                    <value>
+                      <list>
+                        <option value="image-video-wan2.1_b14" />
+                      </list>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="init:" />
+    <option name="LAST_COMMIT_MESSAGE" value="init:" />
+  </component>
+</project>
