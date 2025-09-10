@@ -43,7 +43,7 @@ RUN pip3 install --no-cache-dir xformers==0.0.27.post2
 RUN pip3 install -r requirements.txt
 
 # Install runpod
-RUN pip3 install runpod requests
+RUN pip3 install runpod requests websocket-client
 
 
 # ReActor models
@@ -93,9 +93,6 @@ WORKDIR /
 # RUN python3 install_deps.py
 
 WORKDIR /comfyui/custom_nodes
-
-RUN git clone https://github.com/BennyKok/comfyui-deploy.git && cd comfyui-deploy && git reset --hard 6e068590a0831d10009074e65d23a083b31dd2d7
-RUN cd comfyui-deploy && pip3 install -r requirements.txt
 
 
 # 安装 onnxruntime 运行时
