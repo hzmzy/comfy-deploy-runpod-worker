@@ -64,8 +64,8 @@ RUN  wget -O models/embeddings/Stable_Yogis_PDXL_Positives.safetensors https://h
 RUN  wget -O models/embeddings/Stable_Yogis_PDXL_Negatives-neg.safetensors https://huggingface.co/woods55/mine/resolve/main/Stable_Yogis_PDXL_Negatives-neg.safetensors?download=true
 
 #checkpoints
-RUN  #wget -O models/checkpoints/realismByStableYogi_v50FP16.safetensors https://huggingface.co/woods55/mine/resolve/main/realismByStableYogi_v50FP16.safetensors?download=true
-RUN  wget -O models/checkpoints/realismByStableYogi_v50FP16.safetensors https://huggingface.co/woods55/mine/resolve/main/realismSDXLByStable_v70FP16.safetensors
+RUN  wget -O models/checkpoints/realismByStableYogi_v50FP16.safetensors https://huggingface.co/woods55/mine/resolve/main/realismByStableYogi_v50FP16.safetensors?download=true
+RUN  #wget -O models/checkpoints/realismByStableYogi_v50FP16.safetensors https://huggingface.co/woods55/mine/resolve/main/realismSDXLByStable_v70FP16.safetensors
 
 
 # Install custom nodes
