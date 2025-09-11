@@ -1,0 +1,15 @@
+runpod_worker_comfy:
+  base_path: /runpod-volume
+#  checkpoints: models/checkpoints/
+#  clip: models/clip/
+#  clip_vision: models/clip_vision/
+#  configs: models/configs/
+#  controlnet: models/controlnet/
+#  embeddings: models/embeddings/
+  loras: /runpod-volume/
+  upscale_models: /runpod-volume/
+  diffusion_models: /runpod-volume/
+  text_encoders: /runpod-volume/
+  vae: /runpod-volume/
+  clip_vision: /runpod-volume/
+#  unet: models/unet/

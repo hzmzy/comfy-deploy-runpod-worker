@@ -1,0 +1,6 @@
+.DS_Store
+venv
+.env
+data
+simulated_uploaded
+__pycache__
