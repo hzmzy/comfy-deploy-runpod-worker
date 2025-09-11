@@ -22,6 +22,7 @@ RUN apt-get update && apt-get install -y \
     python3.12-venv \
     python3.12-dev \
     libopenblas-dev \
+    build-essential \
     git \
     wget \
     libgl1 \
@@ -132,7 +133,7 @@ WORKDIR /comfyui/custom_nodes
 # 安装 onnxruntime 运行时
 RUN pip3 install --no-cache-dir onnxruntime-gpu
 RUN git clone https://github.com/ZooHero500/comfyui-reactor-node.git
-RUN cd comfyui-reactor-node && pip3 install -r requirements.txt
+RUN cd comfyui-reactor-node && pip3 install --no-cache-dir -r requirements.txt
 
  # Go back to the root
 WORKDIR /
