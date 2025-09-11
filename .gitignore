@@ -4,3 +4,4 @@ venv
 data
 simulated_uploaded
 __pycache__
+.idea
