@@ -85,7 +85,7 @@
       },
       "19": {
         "inputs": {
-          "model_name": "wan_2.1_vae.safetensors",
+          "model_name": "Wan2_1_VAE_bf16.safetensors",
           "precision": "bf16"
         },
         "class_type": "WanVideoVAELoader",
@@ -191,7 +191,7 @@
       },
       "68": {
         "inputs": {
-          "image": "de455057_5.png"
+          "image": "image.png"
         },
         "class_type": "LoadImage",
         "_meta": {
