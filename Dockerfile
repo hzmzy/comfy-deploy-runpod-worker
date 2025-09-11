@@ -65,43 +65,6 @@ RUN pip3 install -r requirements.txt
 # Install runpod
 RUN pip3 install runpod requests websocket-client
 
-
-# ReActor models
-RUN  mkdir -p models/facerestore_models
-RUN  wget -O models/facerestore_models/codeformer-v0.1.0.pth https://huggingface.co/FMNing/codeformer-v0.1.0/resolve/main/codeformer-v0.1.0.pth
-RUN  mkdir -p models/facedetection
-RUN  wget -O models/facedetection/parsing_parsenet.pth https://github.com/sczhou/CodeFormer/releases/download/v0.1.0/parsing_parsenet.pth
-RUN  mkdir -p models/facedetection
-RUN  wget -O models/facedetection/detection_Resnet50_Final.pth https://github.com/xinntao/facexlib/releases/download/v0.1.0/detection_Resnet50_Final.pth
-RUN  mkdir -p models/insightface
-RUN  wget -O models/insightface/inswapper_128.onnx https://huggingface.co/ezioruan/inswapper_128.onnx/resolve/main/inswapper_128.onnx
-RUN  mkdir -p models/insightface/models/buffalo_l
-RUN  wget -O models/insightface/models/buffalo_l/buffalo_l.zip https://github.com/deepinsight/insightface/releases/download/v0.7/buffalo_l.zip
-#解压 buffalo_l.zip 到当前目录
-RUN unzip models/insightface/models/buffalo_l/buffalo_l.zip -d models/insightface/models/buffalo_l
-#loras
-RUN  wget -O models/loras/Realism_Lora_By_Stable_yogi_SDXL8.1.safetensors https://huggingface.co/woods55/mine/resolve/main/Realism_Lora_By_Stable_yogi_SDXL8.1.safetensors?download=true
-RUN  wget -O models/loras/Super_Skin_Detailer_By_Stable_Yogi_PD0_V1.safetensors https://huggingface.co/woods55/mine/resolve/main/Super_Skin_Detailer_By_Stable_Yogi_PD0_V1.safetensors?download=true
-#embeddings
-RUN  wget -O models/embeddings/Stable_Yogis_PDXL_Positives.safetensors https://huggingface.co/woods55/mine/resolve/main/Stable_Yogis_PDXL_Positives.safetensors?download=true
-RUN  wget -O models/embeddings/Stable_Yogis_PDXL_Negatives-neg.safetensors https://huggingface.co/woods55/mine/resolve/main/Stable_Yogis_PDXL_Negatives-neg.safetensors?download=true
-
-#checkpoints
-RUN  #wget -O models/checkpoints/realismByStableYogi_v50FP16.safetensors https://huggingface.co/woods55/mine/resolve/main/realismByStableYogi_v50FP16.safetensors?download=true
-RUN  wget -O models/checkpoints/realismByStableYogi_v50FP16.safetensors https://huggingface.co/woods55/mine/resolve/main/realismSDXLByStable_v70FP16.safetensors
-
-
-# Install custom nodes
-
-WORKDIR /comfyui/custom_nodes
-
-#RUN git clone --depth 1 https://github.com/ltdrdata/ComfyUI-Manager.git
-#RUN cd ComfyUI-Manager && pip3 install -r requirements.txt
-
-#WORKDIR /comfyui/custom_nodes/ComfyUI-Manager/startup-scripts
-#ADD *_snapshot.json ./
-#RUN mv *_snapshot.json restore-snapshot.json
-
 WORKDIR /comfyui
 
 ADD src/extra_model_paths.yaml ./
@@ -128,6 +91,31 @@ FROM base AS downloader
 
 # Change working directory to ComfyUI
 WORKDIR /comfyui
+
+# ReActor models
+RUN  mkdir -p models/facerestore_models
+RUN  wget -O models/facerestore_models/codeformer-v0.1.0.pth https://huggingface.co/FMNing/codeformer-v0.1.0/resolve/main/codeformer-v0.1.0.pth
+RUN  mkdir -p models/facedetection
+RUN  wget -O models/facedetection/parsing_parsenet.pth https://github.com/sczhou/CodeFormer/releases/download/v0.1.0/parsing_parsenet.pth
+RUN  mkdir -p models/facedetection
+RUN  wget -O models/facedetection/detection_Resnet50_Final.pth https://github.com/xinntao/facexlib/releases/download/v0.1.0/detection_Resnet50_Final.pth
+RUN  mkdir -p models/insightface
+RUN  wget -O models/insightface/inswapper_128.onnx https://huggingface.co/ezioruan/inswapper_128.onnx/resolve/main/inswapper_128.onnx
+RUN  mkdir -p models/insightface/models/buffalo_l
+RUN  wget -O models/insightface/models/buffalo_l/buffalo_l.zip https://github.com/deepinsight/insightface/releases/download/v0.7/buffalo_l.zip
+#解压 buffalo_l.zip 到当前目录
+RUN unzip models/insightface/models/buffalo_l/buffalo_l.zip -d models/insightface/models/buffalo_l
+#loras
+RUN  wget -O models/loras/Realism_Lora_By_Stable_yogi_SDXL8.1.safetensors https://huggingface.co/woods55/mine/resolve/main/Realism_Lora_By_Stable_yogi_SDXL8.1.safetensors?download=true
+RUN  wget -O models/loras/Super_Skin_Detailer_By_Stable_Yogi_PD0_V1.safetensors https://huggingface.co/woods55/mine/resolve/main/Super_Skin_Detailer_By_Stable_Yogi_PD0_V1.safetensors?download=true
+#embeddings
+RUN  wget -O models/embeddings/Stable_Yogis_PDXL_Positives.safetensors https://huggingface.co/woods55/mine/resolve/main/Stable_Yogis_PDXL_Positives.safetensors?download=true
+RUN  wget -O models/embeddings/Stable_Yogis_PDXL_Negatives-neg.safetensors https://huggingface.co/woods55/mine/resolve/main/Stable_Yogis_PDXL_Negatives-neg.safetensors?download=true
+
+#checkpoints
+RUN  #wget -O models/checkpoints/realismByStableYogi_v50FP16.safetensors https://huggingface.co/woods55/mine/resolve/main/realismByStableYogi_v50FP16.safetensors?download=true
+RUN  wget -O models/checkpoints/realismByStableYogi_v50FP16.safetensors https://huggingface.co/woods55/mine/resolve/main/realismSDXLByStable_v70FP16.safetensors
+
 
 # Stage 3: Final image
 FROM base AS final
