@@ -8,6 +8,8 @@ export LD_PRELOAD="${TCMALLOC}"
 comfy-manager-set-mode offline || echo "worker-comfyui - Could not set ComfyUI-Manager network_mode" >&2
 
 echo "worker-comfyui: Starting ComfyUI"
+export WAN_LOWVRAM=0
+export WAN_FORCE_OFFLOAD=0
 
 # Allow operators to tweak verbosity; default is DEBUG.
 : "${COMFY_LOG_LEVEL:=DEBUG}"

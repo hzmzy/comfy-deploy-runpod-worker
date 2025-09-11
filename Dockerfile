@@ -6,6 +6,9 @@ FROM ${BASE_IMAGE} AS base
 
 # Build arguments for this stage (defaults provided by docker-bake.hcl)
 ENV COMFYUI_VERSION=0.3.49
+# 禁用 WanVideoWrapper 的低显存模式 / 强制显存加载
+ENV WAN_LOWVRAM=0
+ENV WAN_FORCE_OFFLOAD=0
 
 # Prevents prompts from packages asking for user input during installation
 ENV DEBIAN_FRONTEND=noninteractive \
