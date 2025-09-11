@@ -103,12 +103,16 @@ RUN cd comfyui-reactor-node && pip3 install -r requirements.txt
 
 WORKDIR /
 
-# Add the start and the handler
-ADD src/start.sh src/rp_handler.py test_input.json  ./
+VOLUME /comfyui/models
+VOLUME /comfyui/input
+VOLUME /comfyui/output
 
+EXPOSE 8188
 
+# Add application code and scripts
+ADD src/start.sh handler.py test_input.json ./
 RUN chmod +x /start.sh
 
+# Set the default command to run when starting the container
+CMD ["/start.sh"]
 
-# Start the container
-CMD /start.sh

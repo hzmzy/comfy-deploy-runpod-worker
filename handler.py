@@ -103,10 +103,10 @@ def _attempt_websocket_reconnect(ws_url, max_attempts, delay_s, initial_error):
             print(f"worker-comfyui - Websocket reconnected successfully.")
             return new_ws  # Return the new connected socket
         except (
-                websocket.WebSocketException,
-                ConnectionRefusedError,
-                socket.timeout,
-                OSError,
+            websocket.WebSocketException,
+            ConnectionRefusedError,
+            socket.timeout,
+            OSError,
         ) as reconn_err:
             last_reconnect_error = reconn_err
             print(
@@ -158,7 +158,7 @@ def validate_input(job_input):
     images = job_input.get("images")
     if images is not None:
         if not isinstance(images, list) or not all(
-                "name" in image and "image" in image for image in images
+            "name" in image and "image" in image for image in images
         ):
             return (
                 None,
@@ -398,8 +398,8 @@ def queue_workflow(workflow, client_id):
 
                 # Try to provide helpful suggestions for common errors
                 if any(
-                        "not in list" in detail and "ckpt_name" in detail
-                        for detail in error_details
+                    "not in list" in detail and "ckpt_name" in detail
+                    for detail in error_details
                 ):
                     available_models = get_available_models()
                     if available_models.get("checkpoints"):
@@ -499,9 +499,9 @@ def handler(job):
 
     # Make sure that the ComfyUI HTTP API is available before proceeding
     if not check_server(
-            f"http://{COMFY_HOST}/",
-            COMFY_API_AVAILABLE_MAX_RETRIES,
-            COMFY_API_AVAILABLE_INTERVAL_MS,
+        f"http://{COMFY_HOST}/",
+        COMFY_API_AVAILABLE_MAX_RETRIES,
+        COMFY_API_AVAILABLE_INTERVAL_MS,
     ):
         return {
             "error": f"ComfyUI server ({COMFY_HOST}) not reachable after multiple retries."
@@ -567,8 +567,8 @@ def handler(job):
                     elif message.get("type") == "executing":
                         data = message.get("data", {})
                         if (
-                                data.get("node") is None
-                                and data.get("prompt_id") == prompt_id
+                            data.get("node") is None
+                            and data.get("prompt_id") == prompt_id
                         ):
                             print(
                                 f"worker-comfyui - Execution finished for prompt {prompt_id}"
@@ -604,7 +604,7 @@ def handler(job):
                     )
                     continue
                 except (
-                        websocket.WebSocketConnectionClosedException
+                    websocket.WebSocketConnectionClosedException
                 ) as reconn_failed_err:
                     # If _attempt_websocket_reconnect fails, it raises this exception
                     # Let this exception propagate to the outer handler's except block
@@ -621,7 +621,7 @@ def handler(job):
         # Fetch history even if there were execution errors, some outputs might exist
         print(f"worker-comfyui - Fetching history for prompt {prompt_id}...")
         history = get_history(prompt_id)
-
+        
 
         if prompt_id not in history:
             error_msg = f"Prompt ID {prompt_id} not found in history after execution."
@@ -676,7 +676,7 @@ def handler(job):
                         if os.environ.get("BUCKET_ENDPOINT_URL"):
                             try:
                                 with tempfile.NamedTemporaryFile(
-                                        suffix=file_extension, delete=False
+                                    suffix=file_extension, delete=False
                                 ) as temp_file:
                                     temp_file.write(image_bytes)
                                     temp_file_path = temp_file.name
@@ -703,7 +703,7 @@ def handler(job):
                                 print(f"worker-comfyui - {error_msg}")
                                 errors.append(error_msg)
                                 if "temp_file_path" in locals() and os.path.exists(
-                                        temp_file_path
+                                    temp_file_path
                                 ):
                                     try:
                                         os.remove(temp_file_path)
@@ -743,7 +743,7 @@ def handler(job):
 
                     if not video_filename:
                         continue
-
+                    
                     print(f"worker-comfyui - Node {node_id} contains video output: {video_filename}")
 
                     # 读取视频文件的二进制
