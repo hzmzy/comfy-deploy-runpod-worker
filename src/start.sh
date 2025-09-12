@@ -37,7 +37,7 @@ else
 
 # Check if sageattention is installed and available
 if python3 -c "import sageattention" 2>/dev/null; then
-    python -u /comfyui/main.py --disable-auto-launch --disable-metadata --use-sage-attention --listen --verbose "${COMFY_LOG_LEVEL}" --log-stdout &
+    python -u /comfyui/main.py --disable-auto-launch --disable-metadata --use-sage-attention --disable-lowvram --listen --verbose "${COMFY_LOG_LEVEL}" --log-stdout &
 else
     echo "**************************************************************"
     echo "⚠️  WARNING: SageAttention not available - using standard mode"
@@ -48,7 +48,7 @@ else
     echo "   • Make sure you select CUDA version 12.8 or 12.9"
     echo "   • Check the additional filters tab before deploying"
     echo "**************************************************************"
-    python -u /comfyui/main.py --disable-auto-launch --disable-metadata --listen --verbose "${COMFY_LOG_LEVEL}" --log-stdout &
+    python -u /comfyui/main.py --disable-auto-launch --disable-metadata ---disable-lowvram -listen --verbose "${COMFY_LOG_LEVEL}" --log-stdout &
 fi
 
 SERVE_API_LOCALLY="${SERVE_API_LOCALLY:-false}"
