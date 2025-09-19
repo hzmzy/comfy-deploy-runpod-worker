@@ -85,7 +85,7 @@ RUN mkdir -p models/checkpoints models/vae models/unet models/clip
 RUN  wget -O models/embeddings/Stable_Yogis_PDXL_Positives.safetensors https://huggingface.co/woods55/mine/resolve/main/Stable_Yogis_PDXL_Positives.safetensors?download=true
 RUN  wget -O models/embeddings/Stable_Yogis_PDXL_Negatives-neg.safetensors https://huggingface.co/woods55/mine/resolve/main/Stable_Yogis_PDXL_Negatives-neg.safetensors?download=true
 #checkpoints
-RUN  wget -O models/checkpoints/XXMix_9realisticSDXL.safetensors https://civitai.com/api/download/models/163192
+RUN  wget -O models/checkpoints/XXMix_9realisticSDXL.safetensors https://huggingface.co/woods55/mine/resolve/main/XXMix_9realisticSDXL.safetensors
 # Stage 3: Final image
 FROM base AS final
 
