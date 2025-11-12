@@ -31,7 +31,7 @@ RUN apt-get update && apt-get install -y \
     libxext6 \
     libxrender1 \
     ffmpeg \
-    && ln -sf /usr/bin/python3.12 /usr/bin/python \
+    && ln -sf /usr/bin/python3.11 /usr/bin/python \
     && ln -sf /usr/bin/pip3 /usr/bin/pip
 
 RUN apt-get install -y unzip
